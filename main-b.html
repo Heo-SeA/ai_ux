@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>소재정보은행 | 소재 통합 탐색 플랫폼</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* ═══════════════════════════════════════
+       DESIGN TOKENS  (B-1과 동일한 토큰 체계 유지)
+    ═══════════════════════════════════════ */
+    :root {
+      /* 게이트웨이 구역 (B-2 Hero) — B-1 personal-zone 대응 */
+      --gw-bg-from:     #08172e;
+      --gw-bg-mid:      #0e1f3a;
+      --gw-bg-to:       #0f1833;
+      --gw-accent:      #3b82f6;
+      --gw-accent2:     #60a5fa;
+      --gw-border:      rgba(59,130,246,0.22);
+      --gw-card:        rgba(255,255,255,0.06);
+      --gw-card-hov:    rgba(255,255,255,0.11);
+      /* 공통(서비스) 구역 — B-1 public-zone 동일 */
+      --public-bg:      #eef2f7;
+      --public-card:    #ffffff;
+      --public-border:  #dde3ec;
+      --public-header-bg: #f8fafd;
+      /* 공통 팔레트 */
+      --primary:        #0f2a52;
+      --primary-mid:    #1a3f7a;
+      --primary-light:  #1e4fa8;
+      --accent:         #2563eb;
+      --accent-light:   #60a5fa;
+      --accent-glow:    rgba(37,99,235,0.12);
+      --metal:          #3b82f6;
+      --metal-light:    #dbeafe;
+      --chem:           #059669;
+      --chem-light:     #d1fae5;
+      --ceramic:        #d97706;
+      --ceramic-light:  #fef3c7;
+      --fiber:          #7c3aed;
+      --fiber-light:    #ede9fe;
+      --surface:        #f1f5f9;
+      --surface2:       #e8edf5;
+      --card:           #ffffff;
+      --border:         #e2e8f0;
+      --border2:        #cbd5e1;
+      --text-1:         #0f172a;
+      --text-2:         #475569;
+      --text-3:         #94a3b8;
+      --success:        #10b981;
+      --warning:        #f59e0b;
+      --danger:         #ef4444;
+      --radius:         12px;
+      --radius-lg:      20px;
+      --shadow-sm:      0 1px 4px rgba(15,26,55,0.07);
+      --shadow-md:      0 4px 20px rgba(15,26,55,0.10);
+      --shadow-lg:      0 12px 48px rgba(15,26,55,0.15);
+      --page-max:       1280px;
+      --page-pad:       40px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Sans KR', 'Inter', sans-serif;
+      background: var(--surface);
+      color: var(--text-1);
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════
+       HEADER  (B-1과 동일 구조, 로그인 버튼 버전)
+    ═══════════════════════════════════════ */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(255,255,255,0.97);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+    }
+    .header-util { background: var(--primary); padding: 5px 0; }
+    .header-util-inner {
+      max-width: var(--page-max); margin: 0 auto; padding: 0 var(--page-pad);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .header-util-left  { display: flex; gap: 18px; }
+    .header-util-right { display: flex; gap: 18px; align-items: center; }
+    .header-util a { font-size: 11.5px; color: rgba(255,255,255,.65); text-decoration: none; transition: color .2s; }
+    .header-util a:hover { color: #fff; }
+    .util-sep { color: rgba(255,255,255,.22); font-size: 10px; }
+
+    .header-main {
+      max-width: var(--page-max); margin: 0 auto; padding: 0 var(--page-pad);
+      display: flex; align-items: center; justify-content: space-between; height: 66px;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-mark {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 10px rgba(37,99,235,.3);
+    }
+    .logo-mark i { color: #fff; font-size: 17px; }
+    .logo-text { display: flex; flex-direction: column; }
+    .logo-text .ko { font-size: 16px; font-weight: 700; color: var(--primary); letter-spacing: -.3px; }
+    .logo-text .en { font-size: 10px; font-weight: 500; color: var(--text-3); letter-spacing: .5px; text-transform: uppercase; }
+
+    nav { display: flex; align-items: center; gap: 2px; }
+    nav a {
+      font-size: 14px; font-weight: 500; color: var(--text-2);
+      text-decoration: none; padding: 8px 16px; border-radius: 8px; transition: all .2s;
+    }
+    nav a:hover { background: var(--surface); color: var(--primary); }
+    nav a.active { color: var(--accent); font-weight: 700; }
+
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .btn-login {
+      height: 36px; padding: 0 20px; border-radius: 9px;
+      background: transparent; border: 1.5px solid var(--border2);
+      font-size: 13.5px; font-weight: 600; color: var(--text-2);
+      cursor: pointer; font-family: inherit; transition: all .2s;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .btn-login:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-signup {
+      height: 36px; padding: 0 20px; border-radius: 9px;
+      background: var(--accent); border: none;
+      font-size: 13.5px; font-weight: 700; color: #fff;
+      cursor: pointer; font-family: inherit; transition: background .2s;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .btn-signup:hover { background: var(--primary-mid); }
+
+    /* ═══════════════════════════════════════
+       GATEWAY ZONE  (B-1 personal-zone 대응)
+       — 어둡고 깊은 네이비, 파란 별빛 계열
+    ═══════════════════════════════════════ */
+    .gateway-zone {
+      background: linear-gradient(158deg, var(--gw-bg-from) 0%, var(--gw-bg-mid) 50%, var(--gw-bg-to) 100%);
+      position: relative;
+    }
+    .gateway-zone::before {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        radial-gradient(ellipse at 80% 10%, rgba(59,130,246,.18) 0%, transparent 48%),
+        radial-gradient(ellipse at 12% 80%, rgba(37,99,235,.14) 0%, transparent 42%),
+        radial-gradient(ellipse at 55% 95%, rgba(96,165,250,.09) 0%, transparent 38%);
+    }
+    .gateway-zone::after {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none; opacity: .025;
+      background-image:
+        linear-gradient(rgba(59,130,246,1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,1) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    /* 게이트웨이 구역 라벨 배너 (B-1 personal-label-bar 대응) */
+    .gw-label-bar {
+      position: relative; z-index: 3;
+      max-width: var(--page-max); margin: 0 auto;
+      padding: 18px var(--page-pad) 0;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .gwl-icon {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: #fff;
+      box-shadow: 0 0 12px rgba(37,99,235,.4);
+    }
+    .gwl-text {
+      font-size: 11px; font-weight: 700;
+      color: rgba(96,165,250,.75); letter-spacing: 1.2px; text-transform: uppercase;
+    }
+    .gwl-divider {
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, rgba(59,130,246,.3) 0%, transparent 100%);
+    }
+
+    /* ═══════════════════════════════════════
+       HERO  (B-1 구조 동일 — 그리드 레이아웃)
+    ═══════════════════════════════════════ */
+    .hero {
+      position: relative; overflow: hidden;
+      padding: 36px var(--page-pad) 52px;
+    }
+    .hero-inner {
+      max-width: var(--page-max); margin: 0 auto;
+      position: relative; z-index: 2;
+      display: grid; grid-template-columns: 1fr 420px; gap: 48px; align-items: center;
+    }
+
+    /* 좌: 배지 + 제목 + 검색 */
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(90deg, rgba(59,130,246,.2), rgba(29,78,216,.15));
+      border: 1px solid rgba(59,130,246,.32);
+      border-radius: 100px; padding: 6px 18px;
+      font-size: 12.5px; color: rgba(255,255,255,.95);
+      margin-bottom: 24px; backdrop-filter: blur(8px);
+      box-shadow: 0 2px 16px rgba(37,99,235,.12);
+    }
+    .pulse-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--gw-accent2); box-shadow: 0 0 8px var(--gw-accent2);
+      animation: blink 2s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
+    .hero-title {
+      font-size: clamp(24px, 2.8vw, 38px); font-weight: 800;
+      color: rgba(255,255,255,.97); line-height: 1.28; letter-spacing: -.6px;
+      margin-bottom: 14px;
+      text-shadow: 0 2px 20px rgba(0,0,0,.3);
+    }
+    .hero-title .hl {
+      background: linear-gradient(90deg, #bfdbfe 0%, #93c5fd 40%, #60a5fa 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-desc {
+      font-size: 14.5px; color: rgba(255,255,255,.62);
+      line-height: 1.78; margin-bottom: 34px; max-width: 520px;
+    }
+
+    /* 검색바 (B-1과 동일 구조) */
+    .search-bar {
+      display: flex; align-items: center;
+      background: #fff; border-radius: 14px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.22);
+      border: 2px solid transparent; transition: border .25s;
+      overflow: hidden; max-width: 640px;
+    }
+    .search-bar:focus-within { border-color: var(--accent-light); }
+    .sb-cat {
+      padding: 0 18px; height: 58px; border-right: 1.5px solid var(--border);
+      display: flex; align-items: center; flex-shrink: 0;
+    }
+    .sb-cat select {
+      border: none; outline: none; font-size: 13px; font-weight: 700;
+      color: var(--primary); font-family: inherit; background: transparent; cursor: pointer;
+    }
+    .sb-input { flex: 1; display: flex; align-items: center; padding: 0 18px; min-width: 0; }
+    .sb-input i { color: var(--text-3); font-size: 16px; margin-right: 10px; flex-shrink: 0; }
+    .sb-input input {
+      width: 100%; border: none; outline: none;
+      font-size: 14.5px; font-family: inherit; color: var(--text-1); height: 58px;
+    }
+    .sb-input input::placeholder { color: var(--text-3); }
+    .sb-btn {
+      margin: 7px; flex-shrink: 0;
+      background: var(--accent); color: #fff; border: none; border-radius: 9px;
+      padding: 0 26px; height: 44px;
+      font-size: 14px; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: background .2s; white-space: nowrap;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .sb-btn:hover { background: var(--primary-mid); }
+
+    .search-tags {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 16px;
+    }
+    .stag-label { font-size: 12px; color: rgba(255,255,255,.45); flex-shrink: 0; }
+    .stag {
+      font-size: 12px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18);
+      color: rgba(255,255,255,.85); padding: 3px 12px; border-radius: 100px;
+      cursor: pointer; transition: all .2s;
+    }
+    .stag:hover { background: rgba(255,255,255,.2); color: #fff; }
+
+    /* ── 우: Conversion Hub 위젯 ── */
+    .conv-widget {
+      background: rgba(255,255,255,.055);
+      border: 1px solid var(--gw-border);
+      border-radius: 20px; padding: 0;
+      backdrop-filter: blur(20px);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.08),
+        inset 0 0 0 1px rgba(59,130,246,.07),
+        0 8px 40px rgba(0,0,0,.35);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 블러 미리보기 영역 */
+    .conv-blur-preview {
+      padding: 22px 22px 0;
+      position: relative;
+    }
+    .cbp-title {
+      font-size: 11px; font-weight: 700; color: rgba(96,165,250,.7);
+      letter-spacing: .8px; text-transform: uppercase; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .cbp-title i { font-size: 10px; }
+
+    /* 블러 처리된 가짜 관심 소재 목록 */
+    .blur-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+    .blur-item {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px; padding: 10px 12px;
+      filter: blur(3.5px); user-select: none; pointer-events: none;
+    }
+    .bi-icon {
+      width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 13px;
+    }
+    .bi-metal  { background: rgba(59,130,246,.3); color: #93c5fd; }
+    .bi-fiber  { background: rgba(124,58,237,.3); color: #c4b5fd; }
+    .bi-ceramic{ background: rgba(217,119,6,.3);  color: #fcd34d; }
+    .bi-text { flex: 1; }
+    .bi-name { font-size: 12.5px; font-weight: 700; color: rgba(255,255,255,.9); }
+    .bi-meta { font-size: 10.5px; color: rgba(255,255,255,.45); }
+    .bi-badge {
+      font-size: 10px; font-weight: 700; padding: 2px 8px;
+      border-radius: 100px; background: rgba(16,185,129,.2); color: #6ee7b7;
+      border: 1px solid rgba(16,185,129,.3);
+    }
+
+    /* 블러 오버레이 + CTA */
+    .conv-cta-overlay {
+      position: relative;
+      background: linear-gradient(180deg, rgba(8,23,46,0) 0%, rgba(8,23,46,.88) 40%, rgba(8,23,46,1) 100%);
+      padding: 20px 22px 24px;
+      text-align: center;
+      margin-top: -30px;
+    }
+    .cta-lock-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), #1d4ed8);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 12px; font-size: 16px; color: #fff;
+      box-shadow: 0 4px 16px rgba(37,99,235,.4);
+    }
+    .cta-heading {
+      font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 6px; line-height: 1.4;
+    }
+    .cta-sub {
+      font-size: 12px; color: rgba(255,255,255,.5); margin-bottom: 18px; line-height: 1.65;
+    }
+    .cta-buttons { display: flex; gap: 8px; justify-content: center; }
+    .cta-btn-login {
+      flex: 1; height: 40px; border-radius: 9px;
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.22);
+      color: rgba(255,255,255,.88); font-size: 13.5px; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: all .2s;
+    }
+    .cta-btn-login:hover { background: rgba(255,255,255,.18); border-color: rgba(255,255,255,.4); }
+    .cta-btn-signup {
+      flex: 1; height: 40px; border-radius: 9px;
+      background: var(--accent); border: none;
+      color: #fff; font-size: 13.5px; font-weight: 800;
+      cursor: pointer; font-family: inherit; transition: background .2s;
+      box-shadow: 0 4px 14px rgba(37,99,235,.45);
+    }
+    .cta-btn-signup:hover { background: var(--primary-mid); }
+
+    /* 위젯 하단: 소셜 프루프 통계 */
+    .conv-stats {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .cs-item {
+      padding: 14px 10px; text-align: center;
+      border-right: 1px solid rgba(255,255,255,.08);
+    }
+    .cs-item:last-child { border-right: none; }
+    .cs-val {
+      font-size: 18px; font-weight: 800; color: #fff;
+      font-family: 'Inter', sans-serif; letter-spacing: -.5px;
+    }
+    .cs-val span { font-size: 11px; font-weight: 700; color: var(--gw-accent2); }
+    .cs-label { font-size: 10px; color: rgba(255,255,255,.4); margin-top: 2px; }
+
+    /* ── Alert Ticker (B-1과 동일 구조, 파란 계열) ── */
+    .alert-strip {
+      background: rgba(5,15,35,.55);
+      border-top: 1px solid rgba(59,130,246,.18);
+      border-bottom: 1px solid rgba(59,130,246,.12);
+      backdrop-filter: blur(10px);
+    }
+    .alert-inner {
+      max-width: var(--page-max); margin: 0 auto; padding: 0 var(--page-pad);
+      display: flex; align-items: stretch;
+    }
+    .alert-badge {
+      display: flex; align-items: center; gap: 8px;
+      background: linear-gradient(90deg, #1d4ed8, #2563eb);
+      color: #fff; font-size: 11.5px; font-weight: 800; letter-spacing: .5px;
+      padding: 0 18px; flex-shrink: 0;
+      box-shadow: 4px 0 12px rgba(37,99,235,.25);
+    }
+    .alert-scroll { flex: 1; overflow: hidden; height: 44px; display: flex; align-items: center; }
+    .alert-track {
+      display: flex; white-space: nowrap;
+      animation: ticker 28s linear infinite;
+    }
+    .alert-track:hover { animation-play-state: paused; }
+    @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .at-item {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding-right: 40px; font-size: 12.5px; color: rgba(255,255,255,.72);
+    }
+    .at-tag {
+      font-size: 10.5px; font-weight: 700; padding: 1px 7px; border-radius: 4px;
+    }
+    .t-hot  { background: rgba(239,68,68,.2);    color: #fca5a5; }
+    .t-new  { background: rgba(245,158,11,.2);   color: #fcd34d; }
+    .t-trend{ background: rgba(59,130,246,.2);   color: #93c5fd; }
+
+    /* ── 게이트웨이 업데이트 바 (틱커 대체) ── */
+    .gw-update-bar {
+      position: relative; z-index: 3;
+      background: rgba(255,255,255,0.04);
+      border-top: 1px solid rgba(59,130,246,0.18);
+      border-bottom: 1px solid rgba(59,130,246,0.12);
+    }
+    .gw-update-inner {
+      max-width: var(--page-max); margin: 0 auto;
+      padding: 10px var(--page-pad);
+      display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+    }
+    .ub-item {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 12px; color: rgba(255,255,255,.62);
+    }
+    .ub-item strong { color: rgba(255,255,255,.9); font-weight: 700; }
+    .ub-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .ub-sep { color: rgba(255,255,255,.15); font-size: 12px; }
+
+    /* ── 인기 소재 랭킹 슬라이더 (B-1 research-timeline 대응) ── */
+    .ranking-section {
+      position: relative; z-index: 3;
+      padding: 32px var(--page-pad) 52px;
+    }
+    .ranking-section .sec-head { margin-bottom: 20px; }
+    .ranking-section .sec-title {
+      color: rgba(255,255,255,.94);
+      padding-left: 14px; position: relative;
+    }
+    .ranking-section .sec-title::before {
+      content: '';
+      position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 4px; height: 18px; border-radius: 2px;
+      background: linear-gradient(180deg, #93c5fd 0%, #2563eb 100%);
+      box-shadow: 0 0 8px rgba(147,197,253,.5);
+    }
+    .ranking-section .sec-title span { color: #93c5fd; }
+    .ranking-section .sec-desc { color: rgba(255,255,255,.42); font-size: 13px; }
+    .ranking-section .sec-more {
+      color: #93c5fd; background: rgba(59,130,246,.14);
+      border: 1px solid rgba(59,130,246,.28); border-radius: 8px;
+      padding: 5px 14px; font-size: 12.5px; text-decoration: none;
+      display: flex; align-items: center; gap: 5px; white-space: nowrap;
+    }
+    .ranking-section .sec-more:hover { color: #bfdbfe; background: rgba(59,130,246,.24); }
+
+    /* 기간 탭 (일/주/월) */
+    .period-tabs { display: flex; gap: 6px; margin-bottom: 20px; }
+    .period-tab {
+      height: 30px; padding: 0 16px; border-radius: 7px;
+      border: 1px solid rgba(255,255,255,.15); background: rgba(255,255,255,.06);
+      font-size: 12px; font-weight: 700; color: rgba(255,255,255,.55);
+      cursor: pointer; font-family: inherit; transition: all .2s;
+    }
+    .period-tab.on {
+      background: var(--accent); border-color: var(--accent); color: #fff;
+      box-shadow: 0 0 12px rgba(37,99,235,.3);
+    }
+    .period-tab:hover:not(.on) { border-color: rgba(255,255,255,.3); color: rgba(255,255,255,.85); }
+
+    /* 랭킹 리스트 */
+    .ranking-wrap { position: relative; padding: 0 20px; }
+    .rk-scroll {
+      display: flex; gap: 14px; overflow-x: auto;
+      padding-bottom: 12px; scroll-snap-type: x mandatory;
+    }
+    .rk-scroll::-webkit-scrollbar { height: 4px; }
+    .rk-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,.05); border-radius: 4px; }
+    .rk-scroll::-webkit-scrollbar-thumb { background: rgba(59,130,246,.35); border-radius: 4px; }
+
+    .rk-card {
+      min-width: 200px; max-width: 200px;
+      background: rgba(255,255,255,.065);
+      border: 1px solid rgba(59,130,246,.2);
+      border-radius: var(--radius); padding: 16px 18px;
+      flex-shrink: 0; cursor: pointer; position: relative;
+      transition: all .25s; scroll-snap-align: start;
+      backdrop-filter: blur(12px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    }
+    .rk-card:hover {
+      background: rgba(59,130,246,.12);
+      border-color: rgba(96,165,250,.5);
+      box-shadow: 0 8px 28px rgba(0,0,0,.28), 0 0 16px rgba(59,130,246,.1);
+      transform: translateY(-3px);
+    }
+    .rk-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 2px; border-radius: var(--radius) var(--radius) 0 0;
+    }
+    .rkc-metal::before  { background: linear-gradient(90deg, #60a5fa, #3b82f6); }
+    .rkc-chem::before   { background: linear-gradient(90deg, #34d399, #059669); }
+    .rkc-ceramic::before{ background: linear-gradient(90deg, #fbbf24, #d97706); }
+    .rkc-fiber::before  { background: linear-gradient(90deg, #c4b5fd, #7c3aed); }
+
+    .rk-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .rk-rank {
+      font-size: 22px; font-weight: 800; font-family: 'Inter', sans-serif;
+      letter-spacing: -1px; line-height: 1;
+    }
+    .rk-rank.gold   { color: #fbbf24; }
+    .rk-rank.silver { color: #94a3b8; }
+    .rk-rank.bronze { color: #d97706; }
+    .rk-rank.normal { color: rgba(255,255,255,.35); }
+    .rk-cat { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 5px; }
+    .rkc-metal  .rk-cat { background: rgba(59,130,246,.25); color: #93c5fd; }
+    .rkc-chem   .rk-cat { background: rgba(5,150,105,.25);  color: #6ee7b7; }
+    .rkc-ceramic .rk-cat{ background: rgba(217,119,6,.25);  color: #fcd34d; }
+    .rkc-fiber  .rk-cat { background: rgba(124,58,237,.25); color: #c4b5fd; }
+
+    .rk-name { font-size: 13px; font-weight: 700; color: rgba(255,255,255,.92); margin-bottom: 8px; line-height: 1.35; }
+    .rk-bar-wrap { height: 4px; background: rgba(255,255,255,.1); border-radius: 4px; margin-bottom: 8px; }
+    .rk-bar { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(.22,1,.36,1); width: 0; }
+    .rkc-metal   .rk-bar { background: linear-gradient(90deg, #60a5fa, #3b82f6); }
+    .rkc-chem    .rk-bar { background: linear-gradient(90deg, #34d399, #059669); }
+    .rkc-ceramic .rk-bar { background: linear-gradient(90deg, #fbbf24, #d97706); }
+    .rkc-fiber   .rk-bar { background: linear-gradient(90deg, #c4b5fd, #7c3aed); }
+
+    .rk-foot { display: flex; align-items: center; justify-content: space-between; }
+    .rk-cnt { font-size: 11.5px; color: rgba(255,255,255,.38); }
+    .rk-change {
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; gap: 3px;
+    }
+    .rk-up   { color: #34d399; }
+    .rk-down { color: #f87171; }
+    .rk-same { color: rgba(255,255,255,.3); }
+
+    /* 화살표 버튼 (B-1 tl-arrow-personal 대응) */
+    .rk-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(59,130,246,.18); border: 1px solid rgba(59,130,246,.35);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 5;
+      color: rgba(147,197,253,.85); font-size: 12px; transition: all .2s;
+    }
+    .rk-arrow:hover {
+      background: rgba(59,130,246,.4); border-color: rgba(96,165,250,.7);
+      color: #fff; box-shadow: 0 0 12px rgba(59,130,246,.3);
+    }
+    .rk-prev { left: -6px; }
+    .rk-next { right: -6px; }
+
+    /* ── 구역 구분선 (B-1 zone-divider 대응) ── */
+    .zone-divider {
+      height: 6px;
+      background: linear-gradient(90deg, #0e1f3a 0%, #1e3a8a 30%, #1a3f7a 70%, var(--public-bg) 100%);
+      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    }
+
+    /* ═══════════════════════════════════════
+       PUBLIC ZONE  (B-1 public-zone 동일)
+    ═══════════════════════════════════════ */
+    .public-zone { background: var(--public-bg); position: relative; }
+
+    /* 공통 구역 레이블 배너 */
+    .public-zone-label {
+      background: var(--public-header-bg);
+      border-bottom: 1px solid var(--public-border); padding: 10px 0;
+    }
+    .pzl-inner {
+      max-width: var(--page-max); margin: 0 auto; padding: 0 var(--page-pad);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .pzl-icon {
+      width: 22px; height: 22px; border-radius: 6px;
+      background: linear-gradient(135deg, var(--accent), var(--primary-mid));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: #fff;
+    }
+    .pzl-text { font-size: 11px; font-weight: 700; color: var(--text-3); letter-spacing: 1px; text-transform: uppercase; }
+    .pzl-divider { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border) 0%, transparent 100%); }
+
+    /* 페이지 바디 */
+    .page-body {
+      max-width: var(--page-max); margin: 0 auto;
+      padding: 52px var(--page-pad);
+      display: flex; flex-direction: column; gap: 56px;
+    }
+
+    /* 섹션 헤더 공통 */
+    .sec-head {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 22px;
+    }
+    .sec-title {
+      font-size: 19px; font-weight: 800; color: var(--text-1);
+      letter-spacing: -.35px;
+      padding-left: 14px; position: relative;
+    }
+    .sec-title::before {
+      content: '';
+      position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 4px; height: 18px; border-radius: 2px;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--primary-mid) 100%);
+    }
+    .sec-title span { color: var(--accent); }
+    .sec-desc { font-size: 13px; color: var(--text-3); margin-top: 4px; }
+    .sec-more {
+      font-size: 13px; font-weight: 600; color: var(--accent);
+      text-decoration: none; display: flex; align-items: center; gap: 5px; white-space: nowrap;
+    }
+    .sec-more:hover { color: var(--primary); }
+
+    /* ── ① 핫토픽 마인드맵 ── */
+    .mindmap-card {
+      background: var(--public-card); border-radius: var(--radius-lg);
+      border: 1.5px solid var(--public-border); overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .mm-toolbar {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+      gap: 12px; padding: 16px 24px; border-bottom: 1px solid var(--public-border);
+      background: var(--public-header-bg);
+    }
+    .mm-toolbar-left { display: flex; align-items: center; gap: 12px; }
+    .mm-label {
+      font-size: 13.5px; font-weight: 700; color: var(--text-1);
+      display: flex; align-items: center; gap: 7px;
+    }
+    .mm-label i { color: var(--accent); }
+    .mm-hot-chips { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+    .mm-chip {
+      height: 30px; padding: 0 14px; border-radius: 8px;
+      border: 1.5px solid var(--border); background: var(--card);
+      font-size: 12px; font-weight: 600; color: var(--text-2);
+      cursor: pointer; transition: all .2s; font-family: inherit;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .mm-chip:hover { border-color: var(--accent); color: var(--accent); }
+    .mm-chip.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .mm-chip .chip-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: currentColor; opacity: .7;
+    }
+    .mm-filters { display: flex; align-items: center; gap: 7px; }
+    .mm-btn {
+      height: 30px; padding: 0 13px; border-radius: 7px;
+      border: 1.5px solid var(--border); background: var(--card);
+      font-size: 11.5px; font-weight: 600; color: var(--text-2);
+      cursor: pointer; transition: all .2s; font-family: inherit;
+    }
+    .mm-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .mm-btn.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    .mm-canvas {
+      height: 420px; background: #f5f8ff; position: relative; overflow: hidden;
+    }
+    #mm-svg { width: 100%; height: 100%; }
+    .mm-expand-hint {
+      position: absolute; bottom: 12px; right: 16px;
+      font-size: 11.5px; color: var(--text-3);
+      display: flex; align-items: center; gap: 5px;
+    }
+
+    .mm-footer {
+      display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+      padding: 12px 24px; border-top: 1px solid var(--public-border);
+      background: var(--public-header-bg);
+    }
+    .mm-legend { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-2); }
+    .mm-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── ② 누적 통계 대시보드 + 실시간 소재 랭킹 (2컬럼) ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+    /* 누적 통계 카드 */
+    .stat-dashboard {
+      background: var(--public-card); border: 1.5px solid var(--public-border);
+      border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm);
+    }
+    .sd-header {
+      padding: 20px 24px; border-bottom: 1px solid var(--public-border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--public-header-bg);
+    }
+    .sd-title { font-size: 14.5px; font-weight: 800; color: var(--text-1); display: flex; align-items: center; gap: 8px; }
+    .sd-title i { color: var(--accent); }
+
+    /* 카운터 히어로 */
+    .sd-hero {
+      padding: 28px 24px 20px;
+      display: flex; align-items: flex-end; gap: 16px;
+      border-bottom: 1px solid var(--public-border);
+    }
+    .total-counter {
+      display: flex; flex-direction: column;
+    }
+    .total-label { font-size: 11.5px; color: var(--text-3); font-weight: 600; margin-bottom: 4px; }
+    .total-num {
+      font-size: 48px; font-weight: 800; font-family: 'Inter', sans-serif;
+      color: var(--primary); letter-spacing: -2px; line-height: 1;
+    }
+    .total-num span { font-size: 24px; color: var(--accent); }
+    .total-sub { font-size: 12px; color: var(--success); font-weight: 700; margin-top: 5px; }
+    .total-mini-stats {
+      flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    .tms-item {
+      background: var(--surface); border-radius: 10px; padding: 12px;
+      border: 1px solid var(--border);
+    }
+    .tms-val { font-size: 18px; font-weight: 800; color: var(--text-1); font-family: 'Inter', sans-serif; letter-spacing: -.5px; }
+    .tms-label { font-size: 10.5px; color: var(--text-3); margin-top: 2px; }
+
+    /* 소재별 비율 바 */
+    .mat-dist { padding: 18px 24px; border-bottom: 1px solid var(--public-border); }
+    .md-title { font-size: 12px; font-weight: 700; color: var(--text-2); margin-bottom: 12px; }
+    .md-row { display: flex; align-items: center; gap: 12px; margin-bottom: 9px; }
+    .md-row:last-child { margin-bottom: 0; }
+    .md-name { font-size: 12px; color: var(--text-2); width: 52px; flex-shrink: 0; }
+    .md-bar-wrap { flex: 1; height: 7px; background: var(--surface2); border-radius: 10px; }
+    .md-bar { height: 100%; border-radius: 10px; transition: width 1.2s cubic-bezier(.22,1,.36,1); width: 0; }
+    .md-cnt { font-size: 12px; font-weight: 700; color: var(--text-1); width: 56px; text-align: right; font-family: 'Inter', sans-serif; }
+    .md-new { font-size: 10.5px; color: var(--success); font-weight: 600; width: 60px; }
+
+    /* 트렌드 차트 */
+    .sd-chart { padding: 18px 24px; }
+    .chart-box { height: 150px; }
+
+    /* 인기 소재 Top10 랭킹 카드 */
+    .ranking-board {
+      background: var(--public-card); border: 1.5px solid var(--public-border);
+      border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm);
+    }
+    .rb-header {
+      padding: 20px 24px; border-bottom: 1px solid var(--public-border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--public-header-bg);
+    }
+    .rb-title { font-size: 14.5px; font-weight: 800; color: var(--text-1); display: flex; align-items: center; gap: 8px; }
+    .rb-tabs { display: flex; gap: 4px; }
+    .rb-tab {
+      height: 26px; padding: 0 12px; border-radius: 6px;
+      border: 1.5px solid var(--border); background: var(--card);
+      font-size: 11.5px; font-weight: 600; color: var(--text-3);
+      cursor: pointer; font-family: inherit; transition: all .2s;
+    }
+    .rb-tab.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .rb-tab:hover:not(.on) { color: var(--text-2); border-color: var(--border2); }
+
+    .rb-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 24px; border-bottom: 1px solid var(--public-border);
+      cursor: pointer; transition: background .15s;
+    }
+    .rb-item:last-child { border-bottom: none; }
+    .rb-item:hover { background: var(--public-bg); }
+    .rb-num {
+      font-size: 14px; font-weight: 800; font-family: 'Inter', sans-serif;
+      min-width: 26px; text-align: center;
+    }
+    .rb-num.n1 { color: #f59e0b; }
+    .rb-num.n2 { color: #94a3b8; }
+    .rb-num.n3 { color: #d97706; }
+    .rb-num.n-else { color: var(--border2); }
+    .rb-cat-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .rb-info { flex: 1; min-width: 0; }
+    .rb-name { font-size: 13px; font-weight: 700; color: var(--text-1); }
+    .rb-sub { font-size: 11px; color: var(--text-3); }
+    .rb-right { text-align: right; flex-shrink: 0; }
+    .rb-bar-wrap { width: 70px; height: 4px; background: var(--surface2); border-radius: 4px; margin-bottom: 4px; }
+    .rb-bar { height: 100%; border-radius: 4px; transition: width 1.1s cubic-bezier(.22,1,.36,1); width: 0; }
+    .rb-cnt { font-size: 11px; font-weight: 700; color: var(--text-2); font-family: 'Inter', sans-serif; }
+    .rb-trend {
+      font-size: 10.5px; font-weight: 700;
+      display: flex; align-items: center; gap: 2px; justify-content: flex-end;
+    }
+    .up   { color: var(--danger); }
+    .down { color: var(--accent); }
+    .same { color: var(--text-3); }
+
+    /* ── ③ 심층보고서 + 웨비나 (지식 피드) ── */
+    .insight-card {
+      background: var(--public-card); border: 1.5px solid var(--public-border);
+      border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm);
+    }
+    .ic-header {
+      padding: 20px 24px; border-bottom: 1px solid var(--public-border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--public-header-bg);
+    }
+    .ic-title { font-size: 14.5px; font-weight: 800; color: var(--text-1); display: flex; align-items: center; gap: 8px; }
+    .ic-title i { color: var(--accent); }
+
+    /* 보고서 아이템 */
+    .report-item {
+      display: flex; align-items: flex-start; gap: 0;
+      padding: 0; border-bottom: 1px solid var(--public-border);
+      cursor: pointer; transition: background .15s;
+    }
+    .report-item:last-child { border-bottom: none; }
+    .report-item:hover { background: var(--public-bg); }
+
+    .ri-accent-bar {
+      width: 4px; flex-shrink: 0; align-self: stretch; border-radius: 0;
+    }
+    .ri-body { padding: 16px 20px; flex: 1; min-width: 0; }
+    .ri-top { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+    .ri-cat {
+      font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 5px;
+    }
+    .ri-type { font-size: 11px; color: var(--text-3); }
+    .ri-badge-hot {
+      font-size: 10px; font-weight: 800; color: var(--danger);
+      background: rgba(239,68,68,.08); padding: 2px 7px;
+      border-radius: 5px; border: 1px solid rgba(239,68,68,.18);
+    }
+    .ri-title { font-size: 13.5px; font-weight: 700; color: var(--text-1); line-height: 1.45; margin-bottom: 6px; }
+    .ri-insight {
+      font-size: 12px; color: var(--text-2); line-height: 1.6;
+      background: var(--surface); border-radius: 7px; padding: 8px 12px;
+      border-left: 3px solid var(--accent); margin-bottom: 6px;
+    }
+    .ri-meta { font-size: 11.5px; color: var(--text-3); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+    /* 웨비나 아이템 (B-1 구조 동일) */
+    .community-card {
+      background: var(--public-card); border: 1.5px solid var(--public-border);
+      border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm);
+    }
+    .cc-header {
+      padding: 20px 24px; border-bottom: 1px solid var(--public-border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--public-header-bg);
+    }
+    .cc-title { font-size: 14.5px; font-weight: 800; color: var(--text-1); display: flex; align-items: center; gap: 8px; }
+
+    .webinar-item {
+      display: flex; align-items: stretch;
+      padding: 16px 24px; border-bottom: 1px solid var(--public-border);
+      cursor: pointer; transition: background .15s;
+    }
+    .webinar-item:last-child { border-bottom: none; }
+    .webinar-item:hover { background: var(--public-bg); }
+    .wi-date {
+      display: flex; flex-direction: column; align-items: center;
+      min-width: 46px; margin-right: 18px; flex-shrink: 0;
+    }
+    .wi-month { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; }
+    .wi-day { font-size: 24px; font-weight: 800; color: var(--text-1); font-family: 'Inter', sans-serif; line-height: 1.1; }
+    .wi-line { flex: 1; width: 2px; background: var(--border); margin-top: 5px; }
+    .wi-body { flex: 1; }
+    .wi-status {
+      font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 5px;
+      margin-bottom: 6px; display: inline-block;
+    }
+    .ws-dday { background: rgba(37,99,235,.1); color: var(--accent); border: 1px solid rgba(37,99,235,.2); }
+    .ws-soon { background: rgba(245,158,11,.1); color: var(--warning); }
+    .ws-plan { background: var(--public-bg); color: var(--text-3); border: 1px solid var(--public-border); }
+    .wi-title { font-size: 13px; font-weight: 700; color: var(--text-1); line-height: 1.4; margin-bottom: 4px; }
+    .wi-speaker { font-size: 11.5px; color: var(--text-3); }
+
+    /* 웨비나 핵심 인사이트 요약 */
+    .wi-insight {
+      font-size: 11.5px; color: var(--text-2); line-height: 1.55;
+      background: var(--surface); border-radius: 6px; padding: 7px 10px;
+      border-left: 2px solid var(--accent); margin-top: 7px;
+    }
+
+    /* Q&A 미리보기 (비로그인 — 통계 기반) */
+    .qa-item {
+      padding: 15px 24px; border-bottom: 1px solid var(--public-border);
+      cursor: pointer; transition: background .15s;
+    }
+    .qa-item:last-child { border-bottom: none; }
+    .qa-item:hover { background: var(--public-bg); }
+    .qa-top { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+    .qa-cat { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 5px; }
+    .qa-hot { font-size: 11px; color: var(--danger); font-weight: 700; display: flex; align-items: center; gap: 3px; }
+    .qa-title { font-size: 13px; font-weight: 600; color: var(--text-1); margin-bottom: 7px; line-height: 1.45; }
+    .qa-meta { display: flex; align-items: center; gap: 14px; font-size: 11.5px; color: var(--text-3); }
+
+    /* ═══════════════════════════════════════
+       FOOTER  (B-1 동일)
+    ═══════════════════════════════════════ */
+    footer {
+      background: var(--primary); color: rgba(255,255,255,.6);
+      padding: 52px var(--page-pad) 30px;
+    }
+    .footer-inner { max-width: var(--page-max); margin: 0 auto; }
+    .footer-top {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
+      padding-bottom: 36px; border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .fb-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .fb-logo .ko { font-size: 16px; font-weight: 700; color: #fff; }
+    .fb-logo .en { font-size: 10px; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .5px; }
+    .fb-desc { font-size: 12.5px; line-height: 1.75; color: rgba(255,255,255,.45); }
+    .fc h4 { font-size: 12.5px; font-weight: 700; color: #fff; margin-bottom: 14px; }
+    .fc ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .fc ul li a { font-size: 12.5px; color: rgba(255,255,255,.5); text-decoration: none; transition: color .2s; }
+    .fc ul li a:hover { color: var(--accent-light); }
+    .footer-bottom {
+      padding-top: 22px; display: flex; align-items: center; justify-content: space-between;
+      font-size: 12px; color: rgba(255,255,255,.35);
+    }
+    .fb-links { display: flex; gap: 18px; }
+    .fb-links a { color: rgba(255,255,255,.35); text-decoration: none; transition: color .2s; }
+    .fb-links a:hover { color: rgba(255,255,255,.65); }
+
+    /* ═══════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════ */
+    @media (max-width: 1080px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .two-col { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
+    }
+    @media (max-width: 768px) {
+      :root { --page-pad: 20px; }
+      nav { display: none; }
+      .footer-top { grid-template-columns: 1fr; }
+      .mm-toolbar { flex-direction: column; align-items: flex-start; }
+      .ranking-section { padding: 24px var(--page-pad) 36px; }
+      .header-right .btn-login { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════ HEADER ════════════ -->
+<header>
+  <div class="header-util">
+    <div class="header-util-inner">
+      <div class="header-util-left">
+        <a href="#">소재정보은행 소개</a>
+        <span class="util-sep">|</span>
+        <a href="#">데이터 제공 신청</a>
+        <span class="util-sep">|</span>
+        <a href="#">이용안내</a>
+      </div>
+      <div class="header-util-right">
+        <a href="#"><i class="fas fa-globe" style="margin-right:3px;font-size:10px;"></i>ENG</a>
+        <span class="util-sep">|</span>
+        <a href="#">사이트맵</a>
+      </div>
+    </div>
+  </div>
+  <div class="header-main">
+    <a href="#" class="logo">
+      <div class="logo-mark"><i class="fas fa-atom"></i></div>
+      <div class="logo-text">
+        <span class="ko">소재정보은행</span>
+        <span class="en">Materials Information Bank</span>
+      </div>
+    </a>
+    <nav>
+      <a href="#">소재정보은행 안내</a>
+      <a href="#">소재정보 서비스</a>
+      <a href="#">지식정보 서비스</a>
+      <a href="#">데이터 활용</a>
+      <a href="#">알림·공지</a>
+    </nav>
+    <div class="header-right">
+      <button class="btn-login" onclick="alert('로그인 페이지로 이동합니다.')">
+        <i class="fas fa-sign-in-alt"></i> 로그인
+      </button>
+      <button class="btn-signup" onclick="alert('회원가입 페이지로 이동합니다.')">
+        <i class="fas fa-user-plus"></i> 회원가입
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ════════════ GATEWAY ZONE (Hero + Update Bar) ════════════ -->
+<div class="gateway-zone" style="padding-top:96px;">
+
+<!-- 게이트웨이 구역 라벨 -->
+<div class="gw-label-bar">
+  <div class="gwl-icon"><i class="fas fa-globe"></i></div>
+  <div class="gwl-text">Platform Data Hub</div>
+  <div class="gwl-divider"></div>
+</div>
+
+<!-- ════════════ HERO ════════════ -->
+<section class="hero" id="hero-section">
+  <div class="hero-inner">
+
+    <!-- 좌: 플랫폼 소개 + 검색 -->
+    <div class="hero-left">
+      <div class="status-pill">
+        <span class="pulse-dot"></span>
+        오늘 <strong style="color:#fff;">1,247건</strong> 신규 등록 &nbsp;·&nbsp; 누적 <strong style="color:#fff;">724,436건</strong> 물성 데이터
+      </div>
+      <h1 class="hero-title">
+        국내 최대 <span class="hl">소재 물성 데이터</span><br />통합 탐색 플랫폼
+      </h1>
+      <p class="hero-desc">
+        금속·화학·세라믹·섬유 724,436건의 물성 데이터를 통합 검색하세요.<br />
+        로그인하면 관심 소재 구독 알림, 연구 타임라인, 맞춤형 데이터 서비스를 이용할 수 있습니다.
+      </p>
+
+      <div class="search-bar">
+        <div class="sb-cat">
+          <select>
+            <option>통합검색</option>
+            <option>금속소재</option>
+            <option>화학소재</option>
+            <option>세라믹소재</option>
+            <option>섬유소재</option>
+            <option>특허정보</option>
+            <option>심층보고서</option>
+          </select>
+        </div>
+        <div class="sb-input">
+          <i class="fas fa-search"></i>
+          <input id="hero-search" type="text" placeholder="소재명, 화학식(예: NaCl), 혹은 인장강도와 같은 물성값을 입력하세요." />
+        </div>
+        <button class="sb-btn" onclick="doSearch()"><i class="fas fa-search"></i>검색</button>
+      </div>
+
+      <div class="search-tags">
+        <span class="stag-label">인기 검색</span>
+        <button class="stag" onclick="setKw('전고체 배터리')">전고체 배터리</button>
+        <button class="stag" onclick="setKw('탄소 저감 섬유')">탄소 저감 섬유</button>
+        <button class="stag" onclick="setKw('Ti-6Al-4V')">Ti-6Al-4V</button>
+        <button class="stag" onclick="setKw('경량 알루미늄')">경량 알루미늄</button>
+        <button class="stag" onclick="setKw('AlSi10Mg')">AlSi10Mg</button>
+      </div>
+    </div>
+
+    <!-- 우: Conversion Hub 위젯 -->
+    <div class="hero-right">
+      <div class="conv-widget">
+
+        <!-- 블러 처리된 관심 소재 미리보기 -->
+        <div class="conv-blur-preview">
+          <div class="cbp-title">
+            <i class="fas fa-lock"></i> 나의 관심 소재 현황 (로그인 후 이용)
+          </div>
+          <div class="blur-list">
+            <div class="blur-item">
+              <div class="bi-icon bi-metal"><i class="fas fa-cube"></i></div>
+              <div class="bi-text">
+                <div class="bi-name">Ti-6Al-4V 합금</div>
+                <div class="bi-meta">금속소재 · 물성 847건</div>
+              </div>
+              <span class="bi-badge">+23 신규</span>
+            </div>
+            <div class="blur-item">
+              <div class="bi-icon bi-fiber"><i class="fas fa-wind"></i></div>
+              <div class="bi-text">
+                <div class="bi-name">탄소섬유 CFRP</div>
+                <div class="bi-meta">섬유소재 · 물성 412건</div>
+              </div>
+              <span class="bi-badge">특허 +5</span>
+            </div>
+            <div class="blur-item">
+              <div class="bi-icon bi-ceramic"><i class="fas fa-layer-group"></i></div>
+              <div class="bi-text">
+                <div class="bi-name">질화규소 Si₃N₄</div>
+                <div class="bi-meta">세라믹소재 · 물성 231건</div>
+              </div>
+              <span class="bi-badge">보고서</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA 오버레이 -->
+        <div class="conv-cta-overlay">
+          <div class="cta-lock-icon"><i class="fas fa-star"></i></div>
+          <div class="cta-heading">나만의 연구 자산을 관리하세요</div>
+          <div class="cta-sub">
+            관심 소재 구독 알림 · 연구 타임라인 · 맞춤형 데이터 제공<br />
+            로그인하면 나만의 연구 자산 관리가 시작됩니다.
+          </div>
+          <div class="cta-buttons">
+            <button class="cta-btn-login" onclick="alert('로그인 페이지로 이동합니다.')">
+              <i class="fas fa-sign-in-alt"></i> 로그인
+            </button>
+            <button class="cta-btn-signup" onclick="alert('회원가입 페이지로 이동합니다.')">
+              <i class="fas fa-user-plus"></i> 무료 회원가입
+            </button>
+          </div>
+        </div>
+
+        <!-- 소셜 프루프 통계 -->
+        <div class="conv-stats">
+          <div class="cs-item">
+            <div class="cs-val"><span id="cs-members">0</span><span>만+</span></div>
+            <div class="cs-label">등록 연구자</div>
+          </div>
+          <div class="cs-item">
+            <div class="cs-val" id="cs-data">0</div>
+            <div class="cs-label">만 건 물성 데이터</div>
+          </div>
+          <div class="cs-item">
+            <div class="cs-val"><span id="cs-inst">0</span><span>+</span></div>
+            <div class="cs-label">참여 기관</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</div><!-- /gateway-zone -->
+
+<!-- 구역 구분선 -->
+<div class="zone-divider"></div>
+
+<!-- ════════════ PUBLIC ZONE ════════════ -->
+<div class="public-zone">
+
+<main class="page-body">
+
+  <!-- ① 핫토픽 마인드맵 -->
+  <section id="mindmap-section">
+    <div class="sec-head">
+      <div>
+        <h2 class="sec-title">플랫폼 <span>핫토픽 지식 관계 맵</span></h2>
+        <p class="sec-desc">지금 가장 많이 탐색되는 핫 토픽 간의 연관 관계를 실시간으로 시각화합니다. 키워드를 클릭해 직접 체험하세요.</p>
+      </div>
+      <a href="#" class="sec-more">전체화면 <i class="fas fa-expand"></i></a>
+    </div>
+
+    <div class="mindmap-card">
+      <div class="mm-toolbar">
+        <div class="mm-toolbar-left">
+          <div class="mm-label"><i class="fas fa-fire-alt" style="color:var(--danger);"></i> 핫토픽 탐색</div>
+          <div class="mm-hot-chips">
+            <button class="mm-chip on" onclick="switchTopic('battery',this)">
+              <span class="chip-dot"></span>전고체 배터리
+            </button>
+            <button class="mm-chip" onclick="switchTopic('carbon',this)">
+              <span class="chip-dot"></span>탄소 저감 섬유
+            </button>
+            <button class="mm-chip" onclick="switchTopic('lightweight',this)">
+              <span class="chip-dot"></span>경량 금속
+            </button>
+          </div>
+        </div>
+        <div class="mm-filters">
+          <button class="mm-btn on"  onclick="filterMM('all',this)">전체</button>
+          <button class="mm-btn"     onclick="filterMM('material',this)"><i class="fas fa-cube"></i> 소재</button>
+          <button class="mm-btn"     onclick="filterMM('patent',this)"><i class="fas fa-award"></i> 특허</button>
+          <button class="mm-btn"     onclick="filterMM('report',this)"><i class="fas fa-file-alt"></i> 보고서</button>
+          <button class="mm-btn"     onclick="filterMM('property',this)"><i class="fas fa-flask"></i> 물성</button>
+        </div>
+      </div>
+
+      <div class="mm-canvas">
+        <svg id="mm-svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid meet"></svg>
+        <div class="mm-expand-hint"><i class="fas fa-mouse-pointer"></i> 노드 클릭 시 미리보기 — 상세 데이터는 로그인 후 이용</div>
+      </div>
+
+      <div class="mm-footer">
+        <span style="font-size:12.5px;font-weight:700;color:var(--text-2);margin-right:6px;">범례</span>
+        <div class="mm-legend"><div class="mm-dot" style="background:#ef4444;"></div>핵심 핫토픽</div>
+        <div class="mm-legend"><div class="mm-dot" style="background:#2563eb;"></div>관련 소재</div>
+        <div class="mm-legend"><div class="mm-dot" style="background:#d97706;"></div>특허</div>
+        <div class="mm-legend"><div class="mm-dot" style="background:#7c3aed;"></div>보고서</div>
+        <div class="mm-legend"><div class="mm-dot" style="background:#94a3b8;"></div>물성값</div>
+        <span style="margin-left:auto;font-size:11.5px;color:var(--text-3);display:flex;align-items:center;gap:6px;">
+          <i class="fas fa-lock" style="color:var(--accent);"></i> 로그인 시 개인화 맵 제공
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ② 누적 통계 대시보드 + 인기 소재 Top 10 -->
+  <section id="stats-section">
+    <div class="sec-head">
+      <div>
+        <h2 class="sec-title">소재 <span>DB 현황</span> &amp; 인기 소재 Top 10</h2>
+        <p class="sec-desc">누적 물성 데이터 통계와 이번 주 가장 주목받는 소재 랭킹을 확인하세요.</p>
+      </div>
+    </div>
+    <div class="two-col">
+
+      <!-- 누적 통계 대시보드 -->
+      <div class="stat-dashboard">
+        <div class="sd-header">
+          <div class="sd-title"><i class="fas fa-chart-bar"></i> 누적 물성 데이터 통계</div>
+          <a href="#" class="sec-more" style="font-size:12px;">전체 통계 <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="sd-hero">
+          <div class="total-counter">
+            <div class="total-label">총 누적 물성 데이터</div>
+            <div class="total-num"><span id="total-count">0</span><span>건+</span></div>
+            <div class="total-sub">▲ +3,271 이번 달 신규 등록</div>
+          </div>
+          <div class="total-mini-stats">
+            <div class="tms-item">
+              <div class="tms-val" id="tms-today">0</div>
+              <div class="tms-label">오늘 신규</div>
+            </div>
+            <div class="tms-item">
+              <div class="tms-val" id="tms-report">0</div>
+              <div class="tms-label">심층보고서</div>
+            </div>
+            <div class="tms-item">
+              <div class="tms-val" id="tms-patent">0</div>
+              <div class="tms-label">특허 데이터</div>
+            </div>
+            <div class="tms-item">
+              <div class="tms-val" id="tms-edu">0</div>
+              <div class="tms-label">교육 콘텐츠</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mat-dist">
+          <div class="md-title">소재 유형별 등록 현황</div>
+          <div class="md-row">
+            <span class="md-name">금속소재</span>
+            <div class="md-bar-wrap"><div class="md-bar" style="background:#3b82f6;" data-w="100"></div></div>
+            <span class="md-cnt">284,723</span>
+            <span class="md-new">▲+1,248</span>
+          </div>
+          <div class="md-row">
+            <span class="md-name">화학소재</span>
+            <div class="md-bar-wrap"><div class="md-bar" style="background:#059669;" data-w="69"></div></div>
+            <span class="md-cnt">197,562</span>
+            <span class="md-new">▲+872</span>
+          </div>
+          <div class="md-row">
+            <span class="md-name">세라믹소재</span>
+            <div class="md-bar-wrap"><div class="md-bar" style="background:#d97706;" data-w="51"></div></div>
+            <span class="md-cnt">143,841</span>
+            <span class="md-new">▲+634</span>
+          </div>
+          <div class="md-row">
+            <span class="md-name">섬유소재</span>
+            <div class="md-bar-wrap"><div class="md-bar" style="background:#7c3aed;" data-w="35"></div></div>
+            <span class="md-cnt">98,310</span>
+            <span class="md-new">▲+517</span>
+          </div>
+        </div>
+
+        <div class="sd-chart">
+          <div style="font-size:12px;font-weight:700;color:var(--text-2);margin-bottom:10px;">월별 누적 등록 트렌드 (2025)</div>
+          <div class="chart-box">
+            <canvas id="trend-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- 인기 소재 Top 10 랭킹 보드 -->
+      <div class="ranking-board">
+        <div class="rb-header">
+          <div class="rb-title"><i class="fas fa-trophy" style="color:#f59e0b;"></i> 인기 소재 Top 10</div>
+          <div class="rb-tabs">
+            <button class="rb-tab on" onclick="switchRBTab('weekly',this)">주간</button>
+            <button class="rb-tab" onclick="switchRBTab('monthly',this)">월간</button>
+          </div>
+        </div>
+
+        <div class="rb-item">
+          <span class="rb-num n1">1</span>
+          <span class="rb-cat-dot" style="background:#ef4444;"></span>
+          <div class="rb-info">
+            <div class="rb-name">Li₇La₃Zr₂O₁₂ (LLZO)</div>
+            <div class="rb-sub">세라믹 · 전고체 전해질</div>
+          </div>
+          <div class="rb-right">
+            <div class="rb-bar-wrap"><div class="rb-bar" style="background:#ef4444;" data-w="100"></div></div>
+            <div class="rb-cnt">4,821건</div>
+            <div class="rb-trend up"><i class="fas fa-arrow-up"></i>+847%</div>
+          </div>
+        </div>
+        <div class="rb-item">
+          <span class="rb-num n2">2</span>
+          <span class="rb-cat-dot" style="background:#7c3aed;"></span>
+          <div class="rb-info">
+            <div class="rb-name">탄소 저감 CFRP 복합재</div>
+            <div class="rb-sub">섬유 · 저탄소 경량 소재</div>
+          </div>
+          <div class="rb-right">
+            <div class="rb-bar-wrap"><div class="rb-bar" style="background:#7c3aed;" data-w="84"></div></div>
+            <div class="rb-cnt">3,647건</div>
+            <div class="rb-trend up"><i class="fas fa-arrow-up"></i>+213%</div>
+          </div>
+        </div>
+        <div class="rb-item">
+          <span class="rb-num n3">3</span>
+          <span class="rb-cat-dot" style="background:#3b82f6;"></span>
+          <div class="rb-info">
+            <div class="rb-name">Ti-6Al-4V 티타늄 합금</div>
+            <div class="rb-sub">금속 · 항공우주·의료</div>
+          </div>
+          <div class="rb-right">
+            <div class="rb-bar-wrap"><div class="rb-bar" style="background:#3b82f6;" data-w="76"></div></div>
+            <div class="rb-cnt">3,201건</div>
+            <div class="rb-trend up"><i class="fas fa-arrow-up"></i>+67%</div>
+          </div>
+        </div>
+        <div class="rb-item">
+          <span class="rb-num n-else">4</span>
+          <span class="rb-cat-dot" style="background:#d97706;"></span>
+          <div class="rb-info">
+            <div class="rb-name">Si₃N₄ 질화규소</div>
+            <div class="rb-sub">세라믹 · 고온 구조 소재</div>
+          </div>
+          <div class="rb-right">
+            <div class="rb-bar-wrap"><div class="rb-bar" style="background:#d97706;" data-w="63"></div></div>
+            <div class="rb-cnt">2,734건</div>
+            <div class="rb-trend up"><i class="fas fa-arrow-up"></i>+42%</div>
+          </div>
+        </div>
+        <div class="rb-item">
+          <span class="rb-num n-else">5</span>
+          <span class="rb-cat-dot" style="background:#3b82f6;"></span>
+          <div class="rb-info">
+            <div class="rb-name">AlSi10Mg 알루미늄 합금</div>
+            <div class="rb-sub">금속 · 적층제조(AM)</div>
+          </div>
+          <div class="rb-right">
+            <div class="rb-bar-wrap"><div class="rb-bar" style="background:#3b82f6;" data-w="57"></div></div>
+            <div class="rb-cnt">2,412건</div>
+            <div class="rb-trend same"><i class="fas fa-minus"></i>유지</div>
+          </div>
+        </div>
+        <div class="rb-item">
+          <span class="rb-num n-else">6</span>
+          <span class="rb-cat-dot" style="background:#059669;"></span>
+          <div class="rb-info">
+            <div class="rb-name">고기능성 에폭시 수지</div>
+            <div class="rb-sub">화학 · 항공·자동차 복합재</div>
+          </div>
+          <div class="rb-right">
+            <div class="rb-bar-wrap"><div class="rb-bar" style="background:#059669;" data-w="49"></div></div>
+            <div class="rb-cnt">2,087건</div>
+            <div class="rb-trend up"><i class="fas fa-arrow-up"></i>+28%</div>
+          </div>
+        </div>
+        <div class="rb-item">
+          <span class="rb-num n-else">7</span>
+          <span class="rb-cat-dot" style="background:#3b82f6;"></span>
+          <div class="rb-info">
+            <div class="rb-name">Inconel 718 니켈 초합금</div>
+            <div class="rb-sub">금속 · 고온 터빈 부품</div>
+          </div>
+          <div class="rb-right">
+            <div class="rb-bar-wrap"><div class="rb-bar" style="background:#3b82f6;" data-w="42"></div></div>
+            <div class="rb-cnt">1,893건</div>
+            <div class="rb-trend down"><i class="fas fa-arrow-down"></i>-3%</div>
+          </div>
+        </div>
+        <div class="rb-item">
+          <span class="rb-num n-else">8</span>
+          <span class="rb-cat-dot" style="background:#d97706;"></span>
+          <div class="rb-info">
+            <div class="rb-name">ZrO₂ 지르코니아</div>
+            <div class="rb-sub">세라믹 · 연료전지·치과</div>
+          </div>
+          <div class="rb-right">
+            <div class="rb-bar-wrap"><div class="rb-bar" style="background:#d97706;" data-w="36"></div></div>
+            <div class="rb-cnt">1,634건</div>
+            <div class="rb-trend up"><i class="fas fa-arrow-up"></i>+15%</div>
+          </div>
+        </div>
+        <div class="rb-item">
+          <span class="rb-num n-else">9</span>
+          <span class="rb-cat-dot" style="background:#7c3aed;"></span>
+          <div class="rb-info">
+            <div class="rb-name">아라미드 섬유 (케블라)</div>
+            <div class="rb-sub">섬유 · 방탄·방호 소재</div>
+          </div>
+          <div class="rb-right">
+            <div class="rb-bar-wrap"><div class="rb-bar" style="background:#7c3aed;" data-w="29"></div></div>
+            <div class="rb-cnt">1,271건</div>
+            <div class="rb-trend same"><i class="fas fa-minus"></i>유지</div>
+          </div>
+        </div>
+        <div class="rb-item">
+          <span class="rb-num n-else">10</span>
+          <span class="rb-cat-dot" style="background:#059669;"></span>
+          <div class="rb-info">
+            <div class="rb-name">폴리이미드 고내열 필름</div>
+            <div class="rb-sub">화학 · 전자·반도체 소재</div>
+          </div>
+          <div class="rb-right">
+            <div class="rb-bar-wrap"><div class="rb-bar" style="background:#059669;" data-w="22"></div></div>
+            <div class="rb-cnt">987건</div>
+            <div class="rb-trend up"><i class="fas fa-arrow-up"></i>+31%</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ③ 최신 심층보고서 + 웨비나·교육 (지식 피드) -->
+  <section id="knowledge-section">
+    <div class="sec-head">
+      <div>
+        <h2 class="sec-title">최신 <span>지식정보 피드</span></h2>
+        <p class="sec-desc">R&amp;D 심층보고서, 웨비나·교육 일정, 핫토픽 Q&amp;A를 한눈에 확인하세요.</p>
+      </div>
+    </div>
+    <div class="two-col">
+
+      <!-- 심층보고서 -->
+      <div class="insight-card">
+        <div class="ic-header">
+          <div class="ic-title"><i class="fas fa-newspaper"></i> 최신 심층보고서</div>
+          <a href="#" class="sec-more">전체 보기 <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="report-item">
+          <div class="ri-accent-bar" style="background:#3b82f6;"></div>
+          <div class="ri-body">
+            <div class="ri-top">
+              <span class="ri-cat" style="background:#dbeafe;color:#3b82f6;">금속</span>
+              <span class="ri-type">심층보고서</span>
+              <span class="ri-badge-hot"><i class="fas fa-fire"></i> HOT</span>
+            </div>
+            <div class="ri-title">차세대 경량 금속 소재 기술 동향 및 국내외 산업 응용 현황 분석</div>
+            <div class="ri-insight">
+              <i class="fas fa-lightbulb" style="color:var(--accent);margin-right:5px;"></i>
+              알루미늄·마그네슘·티타늄 3대 경량 합금의 전기차·항공 적용 확대로 관련 물성 수요 2배↑. SLM 공정 데이터 주목.
+            </div>
+            <div class="ri-meta">
+              <span>2025.06.20</span>
+              <span><i class="fas fa-eye"></i> 3,412</span>
+              <span><i class="fas fa-download"></i> 847</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="report-item">
+          <div class="ri-accent-bar" style="background:#7c3aed;"></div>
+          <div class="ri-body">
+            <div class="ri-top">
+              <span class="ri-cat" style="background:#ede9fe;color:#7c3aed;">섬유</span>
+              <span class="ri-type">심층보고서</span>
+            </div>
+            <div class="ri-title">탄소섬유강화복합재(CFRP) 국내외 시장 현황 및 기술 경쟁력 분석</div>
+            <div class="ri-insight">
+              <i class="fas fa-lightbulb" style="color:var(--accent);margin-right:5px;"></i>
+              탄소 저감 규제 강화로 바이오 기반 탄소섬유 전구체 연구 급증. 국내 생산 역량 부재 리스크 분석 포함.
+            </div>
+            <div class="ri-meta">
+              <span>2025.06.18</span>
+              <span><i class="fas fa-eye"></i> 2,051</span>
+              <span><i class="fas fa-download"></i> 412</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="report-item">
+          <div class="ri-accent-bar" style="background:#059669;"></div>
+          <div class="ri-body">
+            <div class="ri-top">
+              <span class="ri-cat" style="background:#d1fae5;color:#059669;">화학</span>
+              <span class="ri-type">R&D 동향</span>
+            </div>
+            <div class="ri-title">고기능성 에폭시 수지 기반 복합재료 개발 동향 및 항공·자동차 적용 사례</div>
+            <div class="ri-insight">
+              <i class="fas fa-lightbulb" style="color:var(--accent);margin-right:5px;"></i>
+              유리전이온도(Tg) 180℃+ 초고내열 에폭시 개발 경쟁 가속. 국내 KAI·현대차 적용 사례 분석.
+            </div>
+            <div class="ri-meta">
+              <span>2025.06.15</span>
+              <span><i class="fas fa-eye"></i> 987</span>
+              <span><i class="fas fa-download"></i> 231</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="report-item">
+          <div class="ri-accent-bar" style="background:#d97706;"></div>
+          <div class="ri-body">
+            <div class="ri-top">
+              <span class="ri-cat" style="background:#fef3c7;color:#d97706;">세라믹</span>
+              <span class="ri-type">R&D 동향</span>
+            </div>
+            <div class="ri-title">차세대 전고체 배터리용 산화물계 고체전해질 세라믹 소재 개발 현황</div>
+            <div class="ri-insight">
+              <i class="fas fa-lightbulb" style="color:var(--accent);margin-right:5px;"></i>
+              LLZO·LLTO 이온전도도 데이터 집중 등록 중. 소결 공정 최적화 관련 특허 분쟁 동향 포함.
+            </div>
+            <div class="ri-meta">
+              <span>2025.06.12</span>
+              <span><i class="fas fa-eye"></i> 1,734</span>
+              <span><i class="fas fa-download"></i> 318</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 웨비나 + Q&A -->
+      <div style="display:flex;flex-direction:column;gap:20px;">
+
+        <!-- 웨비나 교육 일정 -->
+        <div class="community-card">
+          <div class="cc-header">
+            <div class="cc-title"><i class="fas fa-video" style="color:var(--danger);"></i> 웨비나 · 교육 일정</div>
+            <a href="#" class="sec-more">전체 일정 <i class="fas fa-arrow-right"></i></a>
+          </div>
+
+          <div class="webinar-item">
+            <div class="wi-date">
+              <div class="wi-month">JUN</div>
+              <div class="wi-day">24</div>
+              <div class="wi-line"></div>
+            </div>
+            <div class="wi-body">
+              <span class="wi-status ws-dday">D-Day</span>
+              <div class="wi-title">경량 금속 소재 선택 가이드 및 실무 활용법</div>
+              <div class="wi-speaker"><i class="fas fa-user"></i> 박재료 박사 (한국재료연구원)</div>
+              <div class="wi-insight">참가자 평균 만족도 4.8/5 · 지난 시즌 1,247명 수강</div>
+            </div>
+          </div>
+
+          <div class="webinar-item">
+            <div class="wi-date">
+              <div class="wi-month">JUL</div>
+              <div class="wi-day">03</div>
+              <div class="wi-line"></div>
+            </div>
+            <div class="wi-body">
+              <span class="wi-status ws-soon">D-3</span>
+              <div class="wi-title">탄소섬유 복합재 신뢰성 평가 및 파괴 분석 기초</div>
+              <div class="wi-speaker"><i class="fas fa-user"></i> 이복합 연구원 (KAIST)</div>
+              <div class="wi-insight">CFRP 층간 파괴인성(G<sub>IC</sub>) 데이터 해석 실습 포함</div>
+            </div>
+          </div>
+
+          <div class="webinar-item">
+            <div class="wi-date">
+              <div class="wi-month">JUL</div>
+              <div class="wi-day">10</div>
+            </div>
+            <div class="wi-body">
+              <span class="wi-status ws-plan">예정</span>
+              <div class="wi-title">전고체 배터리 소재 DB 활용 및 전해질 물성 검색 실습</div>
+              <div class="wi-speaker"><i class="fas fa-user"></i> 김전지 박사 (KAIST 배터리연구소)</div>
+              <div class="wi-insight">LLZO 이온전도도·안정성 데이터 활용법 집중 실습</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 핫토픽 Q&A (비로그인 — 집단 통계 기반) -->
+        <div class="community-card">
+          <div class="cc-header">
+            <div class="cc-title"><i class="fas fa-fire" style="color:var(--danger);"></i> 핫토픽 Q&amp;A</div>
+            <a href="#" class="sec-more">게시판 <i class="fas fa-arrow-right"></i></a>
+          </div>
+
+          <div class="qa-item">
+            <div class="qa-top">
+              <span class="qa-cat" style="background:#dbeafe;color:#3b82f6;">금속</span>
+              <span class="qa-hot"><i class="fas fa-fire"></i> HOT</span>
+            </div>
+            <div class="qa-title">Ti-6Al-4V의 SLM 적층 제조 후 열처리 시 인장강도 변화 데이터가 있나요?</div>
+            <div class="qa-meta">
+              <span><i class="fas fa-comment"></i> 14 답변</span>
+              <span><i class="fas fa-eye"></i> 892 조회</span>
+              <span>2시간 전</span>
+            </div>
+          </div>
+
+          <div class="qa-item">
+            <div class="qa-top">
+              <span class="qa-cat" style="background:#ede9fe;color:#7c3aed;">섬유</span>
+              <span class="qa-hot"><i class="fas fa-fire"></i> HOT</span>
+            </div>
+            <div class="qa-title">CFRP 층간 파괴인성(G<sub>IC</sub>)과 제조 공정별 비교 자료를 찾고 있습니다.</div>
+            <div class="qa-meta">
+              <span><i class="fas fa-comment"></i> 8 답변</span>
+              <span><i class="fas fa-eye"></i> 634 조회</span>
+              <span>5시간 전</span>
+            </div>
+          </div>
+
+          <div class="qa-item">
+            <div class="qa-top">
+              <span class="qa-cat" style="background:#fef3c7;color:#d97706;">세라믹</span>
+            </div>
+            <div class="qa-title">전고체 배터리용 LLZO 소결 온도·밀도 관계 데이터가 있나요?</div>
+            <div class="qa-meta">
+              <span><i class="fas fa-comment"></i> 6 답변</span>
+              <span><i class="fas fa-eye"></i> 521 조회</span>
+              <span>8시간 전</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+</div><!-- /public-zone -->
+
+<!-- ════════════ FOOTER ════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="fb-logo">
+          <div class="logo-mark" style="width:34px;height:34px;border-radius:9px;flex-shrink:0;">
+            <i class="fas fa-atom" style="font-size:15px;"></i>
+          </div>
+          <div>
+            <div class="ko">소재정보은행</div>
+            <div class="en">Materials Information Bank</div>
+          </div>
+        </div>
+        <p class="fb-desc">국내 금속·화학·세라믹·섬유 소재의 물성 데이터를 체계적으로 수집·관리·제공하는 국가 소재 데이터 플랫폼입니다.</p>
+      </div>
+      <div class="fc">
+        <h4>소재정보 서비스</h4>
+        <ul>
+          <li><a href="#">금속소재 DB</a></li>
+          <li><a href="#">화학소재 DB</a></li>
+          <li><a href="#">세라믹소재 DB</a></li>
+          <li><a href="#">섬유소재 DB</a></li>
+          <li><a href="#">통합 물성 검색</a></li>
+        </ul>
+      </div>
+      <div class="fc">
+        <h4>지식정보 서비스</h4>
+        <ul>
+          <li><a href="#">심층보고서</a></li>
+          <li><a href="#">교육 · 웨비나</a></li>
+          <li><a href="#">특허정보</a></li>
+          <li><a href="#">Q&A 게시판</a></li>
+        </ul>
+      </div>
+      <div class="fc">
+        <h4>회원 서비스</h4>
+        <ul>
+          <li><a href="#">회원가입</a></li>
+          <li><a href="#">로그인</a></li>
+          <li><a href="#">마이페이지 안내</a></li>
+          <li><a href="#">이용약관</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 소재정보은행. All rights reserved. | 운영기관: 한국재료연구원(KIMS)</span>
+      <div class="fb-links">
+        <a href="#">개인정보처리방침</a>
+        <a href="#">이용약관</a>
+        <a href="#">이메일 무단수집 거부</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ════════════ SCRIPTS ════════════ -->
+<script>
+/* ─── 검색 ─── */
+function setKw(kw) {
+  document.getElementById('hero-search').value = kw;
+  document.getElementById('hero-search').focus();
+  // 마인드맵도 해당 키워드로 업데이트 (토픽 전환)
+  const topicMap = {
+    '전고체 배터리': 'battery',
+    '탄소 저감 섬유': 'carbon',
+    '경량 알루미늄': 'lightweight',
+    'Ti-6Al-4V': 'lightweight',
+    'AlSi10Mg': 'lightweight',
+  };
+  if (topicMap[kw]) {
+    const btn = document.querySelector(`.mm-chip`);
+    switchTopic(topicMap[kw], null);
+  }
+}
+function doSearch() {
+  const v = document.getElementById('hero-search').value.trim();
+  if (v) alert(`"${v}" 검색을 실행합니다.\n(실제 서비스에서는 검색 결과 페이지로 이동합니다.)`);
+}
+document.getElementById('hero-search').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch();
+});
+
+/* ─── 기간 탭 전환 ─── */
+function switchPeriod(period, btn) {
+  document.querySelectorAll('.period-tab').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+}
+function switchRBTab(period, btn) {
+  document.querySelectorAll('.rb-tab').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+/* ─── 카운팅 애니메이션 ─── */
+function animateCounter(el, target, suffix, duration = 1800) {
+  const start = performance.now();
+  const update = (now) => {
+    const p = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 4);
+    const val = Math.floor(ease * target);
+    el.textContent = val.toLocaleString('ko-KR');
+    if (p < 1) requestAnimationFrame(update);
+    else el.textContent = target.toLocaleString('ko-KR');
+  };
+  requestAnimationFrame(update);
+}
+
+/* ─── IntersectionObserver: 카운터 + 바 애니메이션 ─── */
+const counterObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    // 위젯 소셜 프루프 카운터
+    const csMembers = document.getElementById('cs-members');
+    const csData    = document.getElementById('cs-data');
+    const csInst    = document.getElementById('cs-inst');
+    if (csMembers && !csMembers.dataset.done) {
+      animateCounter(csMembers, 14, '', 1400);
+      animateCounter(csData, 72, '', 1600);
+      animateCounter(csInst, 89, '', 1500);
+      csMembers.dataset.done = '1';
+    }
+    counterObs.unobserve(e.target);
+  });
+}, { threshold: 0.4 });
+const convWidget = document.querySelector('.conv-widget');
+if (convWidget) counterObs.observe(convWidget);
+
+const statObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    // 총 누적 카운터
+    const totalEl = document.getElementById('total-count');
+    if (totalEl && !totalEl.dataset.done) {
+      animateCounter(totalEl, 724436, '', 2000);
+      animateCounter(document.getElementById('tms-today'), 1247, '', 1400);
+      animateCounter(document.getElementById('tms-report'), 3218, '', 1600);
+      animateCounter(document.getElementById('tms-patent'), 28741, '', 1800);
+      animateCounter(document.getElementById('tms-edu'), 412, '', 1200);
+      totalEl.dataset.done = '1';
+    }
+    // md-bar 애니메이션
+    e.target.querySelectorAll('.md-bar[data-w]').forEach(bar => {
+      bar.style.width = bar.dataset.w + '%';
+    });
+    // rb-bar 애니메이션
+    e.target.querySelectorAll('.rb-bar[data-w]').forEach(bar => {
+      bar.style.width = bar.dataset.w + '%';
+    });
+    statObs.unobserve(e.target);
+  });
+}, { threshold: 0.2 });
+const statSection = document.getElementById('stats-section');
+if (statSection) statObs.observe(statSection);
+
+/* ─── 트렌드 미니 차트 ─── */
+const tCtx = document.getElementById('trend-chart').getContext('2d');
+new Chart(tCtx, {
+  type: 'line',
+  data: {
+    labels: ['1월','2월','3월','4월','5월','6월'],
+    datasets: [
+      { label:'금속', data:[218000,232000,248000,261000,274000,284723], borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,.07)', borderWidth:2, pointRadius:2.5, tension:.4, fill:true },
+      { label:'화학', data:[152000,163000,174000,182000,191000,197562], borderColor:'#059669', backgroundColor:'rgba(5,150,105,.07)', borderWidth:2, pointRadius:2.5, tension:.4, fill:true },
+      { label:'세라믹', data:[110000,119000,128000,135000,140000,143841], borderColor:'#d97706', backgroundColor:'rgba(217,119,6,.07)', borderWidth:2, pointRadius:2.5, tension:.4, fill:true },
+      { label:'섬유', data:[74000,80000,86000,91000,95000,98310], borderColor:'#7c3aed', backgroundColor:'rgba(124,58,237,.07)', borderWidth:2, pointRadius:2.5, tension:.4, fill:true },
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{ position:'top', labels:{ font:{ family:'Noto Sans KR', size:10 }, boxWidth:8, padding:10 } },
+      tooltip:{ callbacks:{ label: c => ` ${c.dataset.label}: ${c.parsed.y.toLocaleString('ko-KR')}건` } }
+    },
+    scales:{
+      x:{ grid:{ display:false }, ticks:{ font:{ size:10 } } },
+      y:{ grid:{ color:'rgba(0,0,0,.05)' }, ticks:{ font:{ size:10 }, callback: v => v>=1000?(v/1000).toFixed(0)+'K':v } }
+    }
+  }
+});
+
+/* ─── 핫토픽 마인드맵 데이터 ─── */
+const TOPICS = {
+  battery: {
+    center: { id:'c0', label:'전고체 배터리', x:600, y:210, r:44, color:'#ef4444', type:'core' },
+    nodes: [
+      { id:'m1', label:'LLZO',         x:320, y:90,  r:30, color:'#2563eb', type:'material' },
+      { id:'m2', label:'LLTO',         x:880, y:90,  r:28, color:'#2563eb', type:'material' },
+      { id:'m3', label:'LiPON',        x:210, y:250, r:26, color:'#2563eb', type:'material' },
+      { id:'m4', label:'고체\n전해질',   x:990, y:250, r:26, color:'#2563eb', type:'material' },
+      { id:'p1', label:'이온전도도',     x:370, y:360, r:25, color:'#94a3b8', type:'property' },
+      { id:'p2', label:'열안정성',      x:600, y:385, r:25, color:'#94a3b8', type:'property' },
+      { id:'p3', label:'계면저항',      x:830, y:360, r:25, color:'#94a3b8', type:'property' },
+      { id:'p4', label:'소결온도',      x:440, y:72,  r:24, color:'#94a3b8', type:'property' },
+      { id:'p5', label:'밀도',          x:760, y:72,  r:24, color:'#94a3b8', type:'property' },
+      { id:'t1', label:'소결\n공정특허', x:255, y:155, r:29, color:'#d97706', type:'patent' },
+      { id:'t2', label:'전해질\n코팅특허',x:945, y:155, r:29, color:'#d97706', type:'patent' },
+      { id:'r1', label:'산화물계\n동향',  x:480, y:135, r:31, color:'#7c3aed', type:'report' },
+      { id:'r2', label:'배터리\n시장분석',x:720, y:135, r:31, color:'#7c3aed', type:'report' },
+    ],
+    edges:[
+      ['c0','m1'],['c0','m2'],['c0','m3'],['c0','m4'],
+      ['c0','p1'],['c0','p2'],['c0','p3'],['c0','p4'],['c0','p5'],
+      ['c0','t1'],['c0','t2'],['c0','r1'],['c0','r2'],
+      ['m1','p1'],['m2','p3'],['t1','m3'],['r1','m1'],['r2','m2'],['t2','m4'],
+    ]
+  },
+  carbon: {
+    center: { id:'c0', label:'탄소 저감\nCFRP', x:600, y:210, r:44, color:'#7c3aed', type:'core' },
+    nodes: [
+      { id:'m1', label:'바이오\n탄소섬유',  x:310, y:90,  r:30, color:'#2563eb', type:'material' },
+      { id:'m2', label:'재활용\nCFRP',    x:890, y:90,  r:28, color:'#2563eb', type:'material' },
+      { id:'m3', label:'아라미드',         x:200, y:248, r:26, color:'#2563eb', type:'material' },
+      { id:'m4', label:'유리섬유\n혼합',   x:1000,y:248, r:26, color:'#2563eb', type:'material' },
+      { id:'p1', label:'인장강도',         x:360, y:360, r:25, color:'#94a3b8', type:'property' },
+      { id:'p2', label:'탄소\n배출량',     x:600, y:385, r:25, color:'#94a3b8', type:'property' },
+      { id:'p3', label:'굴곡강도',         x:840, y:360, r:25, color:'#94a3b8', type:'property' },
+      { id:'p4', label:'ILSS',            x:430, y:70,  r:24, color:'#94a3b8', type:'property' },
+      { id:'p5', label:'밀도',            x:770, y:70,  r:24, color:'#94a3b8', type:'property' },
+      { id:'t1', label:'친환경\n공정특허', x:245, y:153, r:29, color:'#d97706', type:'patent' },
+      { id:'t2', label:'재활용\n방법특허', x:955, y:153, r:29, color:'#d97706', type:'patent' },
+      { id:'r1', label:'저탄소\n소재동향', x:470, y:132, r:31, color:'#7c3aed', type:'report' },
+      { id:'r2', label:'시장\n규모분석',  x:730, y:132, r:31, color:'#7c3aed', type:'report' },
+    ],
+    edges:[
+      ['c0','m1'],['c0','m2'],['c0','m3'],['c0','m4'],
+      ['c0','p1'],['c0','p2'],['c0','p3'],['c0','p4'],['c0','p5'],
+      ['c0','t1'],['c0','t2'],['c0','r1'],['c0','r2'],
+      ['m1','p1'],['m2','p3'],['t1','m3'],['r1','m1'],['r2','m2'],
+    ]
+  },
+  lightweight: {
+    center: { id:'c0', label:'경량 금속\nTi·Al·Mg', x:600, y:210, r:44, color:'#2563eb', type:'core' },
+    nodes: [
+      { id:'m1', label:'Ti-6Al-4V', x:320, y:90,  r:30, color:'#059669', type:'material' },
+      { id:'m2', label:'AlSi10Mg', x:880, y:90,  r:28, color:'#059669', type:'material' },
+      { id:'m3', label:'AZ31\nMg합금', x:210, y:248, r:26, color:'#059669', type:'material' },
+      { id:'m4', label:'SUS 304', x:990, y:248, r:26, color:'#059669', type:'material' },
+      { id:'p1', label:'인장강도', x:365, y:360, r:25, color:'#94a3b8', type:'property' },
+      { id:'p2', label:'피로강도', x:600, y:385, r:25, color:'#94a3b8', type:'property' },
+      { id:'p3', label:'열전도율', x:835, y:360, r:25, color:'#94a3b8', type:'property' },
+      { id:'p4', label:'경도(HV)', x:445, y:70,  r:24, color:'#94a3b8', type:'property' },
+      { id:'p5', label:'연신율',   x:755, y:70,  r:24, color:'#94a3b8', type:'property' },
+      { id:'t1', label:'열처리\n특허', x:255, y:153, r:29, color:'#d97706', type:'patent' },
+      { id:'t2', label:'SLM\n공정특허',x:945, y:153, r:29, color:'#d97706', type:'patent' },
+      { id:'r1', label:'경량화\n보고서', x:478, y:132, r:31, color:'#7c3aed', type:'report' },
+      { id:'r2', label:'항공소재\n동향', x:722, y:132, r:31, color:'#7c3aed', type:'report' },
+    ],
+    edges:[
+      ['c0','m1'],['c0','m2'],['c0','m3'],['c0','m4'],
+      ['c0','p1'],['c0','p2'],['c0','p3'],['c0','p4'],['c0','p5'],
+      ['c0','t1'],['c0','t2'],['c0','r1'],['c0','r2'],
+      ['m1','p1'],['m2','p3'],['t1','m3'],['r1','m1'],['r2','m2'],['t2','m4'],
+    ]
+  }
+};
+
+let currentTopic = 'battery';
+let currentFilter = 'all';
+let currentFilterBtn = null;
+
+function switchTopic(topic, btn) {
+  currentTopic = topic;
+  document.querySelectorAll('.mm-chip').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  drawMM();
+}
+
+function filterMM(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.mm-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  drawMM();
+}
+
+function drawMM() {
+  const topic = TOPICS[currentTopic];
+  const filter = currentFilter;
+  const svg = document.getElementById('mm-svg');
+  svg.innerHTML = '';
+  const ns = 'http://www.w3.org/2000/svg';
+
+  // defs: 그라데이션
+  const defs = document.createElementNS(ns,'defs');
+  const g = document.createElementNS(ns,'radialGradient');
+  g.setAttribute('id','core-g');
+  g.innerHTML = `<stop offset="0%" stop-color="${topic.center.color}"/><stop offset="100%" stop-color="${topic.center.color}cc"/>`;
+  defs.appendChild(g);
+
+  // 배경 패턴
+  const bgPat = document.createElementNS(ns,'pattern');
+  bgPat.setAttribute('id','grid'); bgPat.setAttribute('width','40'); bgPat.setAttribute('height','40');
+  bgPat.setAttribute('patternUnits','userSpaceOnUse');
+  const bgLine = document.createElementNS(ns,'path');
+  bgLine.setAttribute('d','M 40 0 L 0 0 0 40'); bgLine.setAttribute('fill','none');
+  bgLine.setAttribute('stroke','rgba(37,99,235,0.07)'); bgLine.setAttribute('stroke-width','1');
+  bgPat.appendChild(bgLine);
+  defs.appendChild(bgPat);
+  svg.appendChild(defs);
+
+  const bgRect = document.createElementNS(ns,'rect');
+  bgRect.setAttribute('width','1200'); bgRect.setAttribute('height','420');
+  bgRect.setAttribute('fill','url(#grid)');
+  svg.appendChild(bgRect);
+
+  const all = [topic.center, ...topic.nodes];
+
+  // 엣지
+  topic.edges.forEach(([fId, tId]) => {
+    const from = all.find(n => n.id === fId);
+    const to   = all.find(n => n.id === tId);
+    if (!from || !to) return;
+    const toNode = topic.nodes.find(n => n.id === tId) || topic.center;
+    if (filter !== 'all' && toNode.type !== 'core' && toNode.type !== filter) return;
+
+    const line = document.createElementNS(ns,'line');
+    line.setAttribute('x1', from.x); line.setAttribute('y1', from.y);
+    line.setAttribute('x2', to.x);   line.setAttribute('y2', to.y);
+    line.setAttribute('stroke', 'rgba(37,99,235,0.12)');
+    line.setAttribute('stroke-width','1.5');
+    line.setAttribute('stroke-dasharray','5 4');
+    svg.appendChild(line);
+  });
+
+  // 노드
+  all.forEach(node => {
+    if (node.id !== 'c0' && filter !== 'all' && node.type !== filter) return;
+
+    const grp = document.createElementNS(ns,'g');
+    grp.style.cursor = 'pointer';
+    grp.addEventListener('click', () => {
+      if (node.id === 'c0') return;
+      alert(`[${node.label.replace('\n','')}] 미리보기\n\n로그인 후 상세 데이터 및 관계 분석을 이용할 수 있습니다.`);
+    });
+
+    if (node.id === 'c0') {
+      const glow = document.createElementNS(ns,'circle');
+      glow.setAttribute('cx', node.x); glow.setAttribute('cy', node.y);
+      glow.setAttribute('r', node.r + 16);
+      glow.setAttribute('fill', node.color + '18');
+      grp.appendChild(glow);
+    }
+
+    const circ = document.createElementNS(ns,'circle');
+    circ.setAttribute('cx', node.x); circ.setAttribute('cy', node.y);
+    circ.setAttribute('r', node.r);
+    circ.setAttribute('fill', node.id === 'c0' ? 'url(#core-g)' : node.color);
+    circ.setAttribute('fill-opacity', node.id === 'c0' ? '1' : '0.88');
+    circ.setAttribute('stroke', '#fff');
+    circ.setAttribute('stroke-width', node.id === 'c0' ? '3' : '2');
+    grp.addEventListener('mouseenter', () => circ.setAttribute('r', node.r + 4));
+    grp.addEventListener('mouseleave', () => circ.setAttribute('r', node.r));
+    grp.appendChild(circ);
+
+    const lines = node.label.split('\n');
+    const lh = 13, th = (lines.length - 1) * lh;
+    lines.forEach((ln, i) => {
+      const txt = document.createElementNS(ns,'text');
+      txt.setAttribute('x', node.x);
+      txt.setAttribute('y', node.y - th / 2 + i * lh + 4.5);
+      txt.setAttribute('text-anchor','middle');
+      txt.setAttribute('fill','#fff');
+      txt.setAttribute('font-size', node.id === 'c0' ? '13' : '10.5');
+      txt.setAttribute('font-weight', node.id === 'c0' ? '800' : '700');
+      txt.setAttribute('font-family','Noto Sans KR,sans-serif');
+      txt.textContent = ln;
+      grp.appendChild(txt);
+    });
+
+    svg.appendChild(grp);
+  });
+}
+
+// 초기 렌더
+drawMM();
+</script>
+</body>
+</html>
