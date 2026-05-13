@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KIRO 기업지원 플랫폼</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        .tab-active { @apply bg-blue-900 text-white ring-4 ring-blue-100 scale-105; }
+        .tab-inactive { @apply bg-white text-slate-500 border border-slate-200 hover:bg-slate-50; }
+        .dropdown-menu { display: none; }
+        .group:hover .dropdown-menu { display: block; }
+        @keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .animate-pulse-slow { animation: pulse-slow 3s infinite ease-in-out; }
+    </style>
+</head>
+<body class="bg-white text-slate-900">
+
+    <!-- 1. 헤더 (이미지 image_4a242f.png 반영) -->
+    <header class="sticky top-0 z-50 bg-white border-b border-slate-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+            
+            <!-- Left: KIRO 홈 버튼 & 로고 -->
+            <div class="flex items-center gap-6">
+                <a href="#" class="border border-slate-200 px-3 py-1 rounded text-[11px] font-bold text-slate-400 hover:bg-slate-50 transition-colors tracking-tight">KIRO 홈</a>
+                <div class="w-px h-4 bg-slate-200"></div>
+                <div class="flex items-center gap-2.5 cursor-pointer">
+                    <div class="bg-[#004d3d] p-1.5 rounded-lg shrink-0">
+                        <i data-lucide="layout-grid" class="text-white w-5 h-5"></i>
+                    </div>
+                    <span class="text-lg font-bold tracking-tight text-slate-900">기업지원 플랫폼</span>
+                </div>
+            </div>
+
+            <!-- Middle: 1차 메뉴 -->
+            <nav class="hidden lg:flex items-center gap-8 font-medium">
+                <div class="relative group">
+                    <button class="py-7 text-slate-700 hover:text-blue-700 transition-colors flex items-center gap-1">
+                        소개 <i data-lucide="chevron-down" class="w-4 h-4 opacity-30"></i>
+                    </button>
+                    <div class="dropdown-menu absolute top-full left-1/2 -translate-x-1/2 w-48 bg-white shadow-2xl rounded-b-xl border border-slate-100 overflow-hidden">
+                        <div class="p-2">
+                            <a href="#" class="block px-4 py-3 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg">기업지원 소개</a>
+                            <a href="#" class="block px-4 py-3 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg">기업 협력 프로그램</a>
+                            <a href="#" class="block px-4 py-3 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg">파트너 기업</a>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="py-7 text-slate-700 hover:text-blue-700">기술이전</a>
+                <a href="#" class="py-7 text-slate-700 hover:text-blue-700">장비/시설</a>
+                <a href="#" class="py-7 text-slate-700 hover:text-blue-700">KOLAS 인증</a>
+                <a href="#" class="py-7 text-slate-700 hover:text-blue-700">마이페이지</a>
+            </nav>
+
+            <!-- Right: AI KIRO 버튼 & 로그인 정보 -->
+            <div class="flex items-center gap-3">
+                <button class="bg-[#6366f1] text-white px-5 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 hover:bg-[#4f46e5] transition-all shadow-md">
+                    <i data-lucide="bot" class="w-4 h-4"></i> AI KIRO
+                </button>
+                <div class="flex items-center gap-3 bg-slate-50 border border-slate-100 pl-1.5 pr-4 py-1.5 rounded-full cursor-pointer hover:bg-slate-100 transition-all">
+                    <div class="w-8 h-8 bg-[#d1fae5] rounded-full flex items-center justify-center text-[#065f46] text-xs font-black shadow-sm">김</div>
+                    <div class="flex items-center gap-1">
+                        <span class="text-sm font-bold text-slate-700">김플랜 님</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 opacity-30"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. 비주얼 영역 & 로그인 영역 -->
+    <section class="bg-slate-50 border-b border-slate-200 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 py-16 lg:py-24 flex flex-col lg:flex-row gap-12 items-center">
+            <!-- 비주얼 영역 -->
+            <div class="flex-1 text-center lg:text-left">
+                <h1 class="text-4xl md:text-6xl font-black text-slate-900 mb-8 leading-[1.1]">
+                    든든하고 스마트한,<br />
+                    <span class="text-blue-700 relative">
+                        기업의 동반자
+                        <span class="absolute bottom-2 left-0 w-full h-3 bg-blue-200/40 -z-10"></span>
+                    </span> KIRO
+                </h1>
+                <p class="text-lg md:text-xl text-slate-500 max-w-xl mb-10 leading-relaxed font-medium">
+                    로봇 산업의 최전선에서 기업의 기술적 난제를 함께 고민하고<br class="hidden md:block" />
+                    보유 인프라를 통해 귀사의 가속 성장을 지원합니다.
+                </p>
+            </div>
+
+            <!-- 로그인/상태 위젯 영역 -->
+            <div class="lg:w-[480px] w-full">
+                <div class="bg-white rounded-[2.5rem] p-10 shadow-[0_32px_64px_-15px_rgba(0,0,0,0.08)] border border-white">
+                    <div class="flex items-center justify-between mb-10">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center border border-blue-100">
+                                <i data-lucide="user" class="text-blue-600 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-800"><span class="text-blue-700">김플랜</span> 님 안녕하세요!</p>
+                                <p class="text-[11px] text-slate-400 font-medium">최근 접속: 2026.05.13</p>
+                            </div>
+                        </div>
+                        <button class="p-2 text-slate-400 hover:bg-slate-100 rounded-full relative">
+                            <i data-lucide="bell" class="w-5 h-5"></i>
+                            <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-2 py-6 bg-slate-50/50 rounded-3xl border border-dashed border-slate-200 mb-8">
+                        <div class="text-center">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">접수</p>
+                            <p class="text-xl font-black text-slate-900">1건</p>
+                        </div>
+                        <div class="text-center border-x border-slate-200">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">진행</p>
+                            <p class="text-xl font-black text-blue-700">2건</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">완료</p>
+                            <p class="text-xl font-black text-slate-900">0건</p>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-4 bg-blue-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-black transition-all">
+                        마이페이지 바로가기 <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. 신청 프로세스 안내 (탭 버튼형) -->
+    <section class="max-w-7xl mx-auto px-4 py-20 md:py-28">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-black text-slate-900 mb-4">신청 프로세스 안내</h2>
+            <p class="text-slate-500 text-lg">원하시는 지원 서비스를 선택하시면 상세 절차를 안내해 드립니다.</p>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-3 mb-20">
+            <button onclick="switchTab('tech')" id="tab-tech" class="tab-active flex items-center gap-2 px-8 py-4 rounded-full font-bold text-sm transition-all shadow-sm">
+                <i data-lucide="message-square" class="w-4 h-4"></i> 기술상담 신청
+            </button>
+            <button onclick="switchTab('equipment')" id="tab-equipment" class="tab-inactive flex items-center gap-2 px-8 py-4 rounded-full font-bold text-sm transition-all shadow-sm">
+                <i data-lucide="box" class="w-4 h-4"></i> 장비/시설 신청
+            </button>
+            <button onclick="switchTab('kolas')" id="tab-kolas" class="tab-inactive flex items-center gap-2 px-8 py-4 rounded-full font-bold text-sm transition-all shadow-sm">
+                <i data-lucide="file-check" class="w-4 h-4"></i> KOLAS 인증 신청
+            </button>
+        </div>
+
+        <div id="tech-content" class="block animate-in fade-in duration-700">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                <div class="lg:col-span-3 space-y-6">
+                    <div class="bg-slate-50 p-8 rounded-[2rem] border border-slate-200 text-center relative border-l-[6px] border-l-blue-700">
+                        <span class="text-[11px] font-black text-blue-700 tracking-[0.2em] block mb-2 uppercase italic">STEP 01</span>
+                        <h4 class="font-bold text-xl mb-1">수요기술 접수</h4>
+                        <p class="text-xs text-slate-400 font-medium">On/Off Line 접수</p>
+                        <div class="absolute -right-5 top-1/2 -translate-y-1/2 hidden lg:block text-slate-200"><i data-lucide="chevron-right" class="w-10 h-10"></i></div>
+                    </div>
+                    <div class="bg-slate-50 p-8 rounded-[2rem] border border-slate-200 text-center relative border-l-[6px] border-l-blue-700">
+                        <span class="text-[11px] font-black text-blue-700 tracking-[0.2em] block mb-2 uppercase italic">STEP 02</span>
+                        <h4 class="font-bold text-xl mb-1">수요기술 진단</h4>
+                        <p class="text-xs text-slate-400 font-medium leading-tight">기술코디네이터<br />현장방문 및 진단</p>
+                        <div class="absolute -right-5 top-1/2 -translate-y-1/2 hidden lg:block text-slate-200"><i data-lucide="chevron-right" class="w-10 h-10"></i></div>
+                    </div>
+                </div>
+                <div class="lg:col-span-4 flex justify-center">
+                    <div class="w-72 h-72 rounded-[4rem] bg-blue-900 flex items-center justify-center text-white shadow-2xl relative border-[14px] border-blue-50">
+                        <div class="text-center">
+                            <i data-lucide="file-search" class="w-12 h-12 text-blue-200 mx-auto mb-4"></i>
+                            <h3 class="text-3xl font-black tracking-tight">기술검토</h3>
+                            <p class="text-[11px] font-bold opacity-40 mt-3 tracking-[0.3em] uppercase">Decision</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-5 grid grid-cols-2 gap-5">
+                    <div class="bg-blue-50/70 p-6 rounded-[2rem] border border-blue-100 h-40 flex flex-col justify-between hover:bg-blue-600 hover:text-white transition-all cursor-pointer">
+                        <span class="text-[11px] font-black opacity-40 uppercase">A Type</span>
+                        <h5 class="text-lg font-bold">즉시해결<br />기술지원</h5>
+                        <i data-lucide="arrow-right" class="w-6 h-6 self-end"></i>
+                    </div>
+                    <div class="bg-blue-50/70 p-6 rounded-[2rem] border border-blue-100 h-40 flex flex-col justify-between hover:bg-blue-600 hover:text-white transition-all cursor-pointer">
+                        <span class="text-[11px] font-black opacity-40 uppercase">B Type</span>
+                        <h5 class="text-lg font-bold">단기해결<br />기술지원</h5>
+                        <i data-lucide="arrow-right" class="w-6 h-6 self-end"></i>
+                    </div>
+                    <div class="bg-blue-50/70 p-6 rounded-[2rem] border border-blue-100 h-40 flex flex-col justify-between hover:bg-blue-600 hover:text-white transition-all cursor-pointer">
+                        <span class="text-[11px] font-black opacity-40 uppercase">C Type</span>
+                        <h5 class="text-lg font-bold">장기적<br />수요기술</h5>
+                        <i data-lucide="arrow-right" class="w-6 h-6 self-end"></i>
+                    </div>
+                    <div class="bg-blue-900 p-6 rounded-[2rem] h-40 text-white flex flex-col justify-between shadow-xl hover:scale-105 transition-all cursor-pointer">
+                        <span class="text-[11px] font-black opacity-40 uppercase tracking-widest">Strategic</span>
+                        <h5 class="text-lg font-bold underline underline-offset-8 decoration-blue-500">과제화 추진<br /><span class="text-[10px] opacity-70">(ACE/BKT 등)</span></h5>
+                        <i data-lucide="activity" class="w-6 h-6 self-end text-blue-400"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="other-content" class="hidden py-32 text-center bg-slate-50 rounded-[3rem] border border-dashed border-slate-200 text-slate-400 font-bold italic">
+            준비 중인 프로세스 안내 영역입니다.
+        </div>
+    </section>
+
+    <!-- 4. 챗봇 영역 -->
+    <section class="bg-blue-900 py-24 px-4 relative overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[15rem] font-black text-white/5 whitespace-nowrap pointer-events-none uppercase">
+            KIRO CHATBOT
+        </div>
+        
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 items-center relative z-10">
+            <div class="flex-1 text-white text-center lg:text-left">
+                <div class="bg-white/10 w-fit p-3 rounded-2xl mb-8 mx-auto lg:mx-0">
+                    <i data-lucide="bot" class="w-10 h-10"></i>
+                </div>
+                <h2 class="text-4xl font-black mb-6 leading-tight uppercase tracking-tight">지능형 가이드 챗봇</h2>
+                <p class="text-blue-100 text-lg max-w-md opacity-80 font-medium mx-auto lg:mx-0">
+                    KIRO의 복잡한 지원 서비스를 더 빠르고 정확하게 찾아드립니다.<br />
+                    무엇이든 물어보세요!
+                </p>
+            </div>
+
+            <div class="lg:w-[540px] w-full bg-white rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col h-[520px]">
+                <div class="bg-slate-900 p-6 flex items-center justify-between text-white">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center"><i data-lucide="bot" class="w-6 h-6"></i></div>
+                        <div>
+                            <h3 class="font-bold text-sm uppercase">KIRO AI GUIDE</h3>
+                            <p class="text-[10px] opacity-50 flex items-center gap-1"><span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span> 응답 가능</p>
+                        </div>
+                    </div>
+                    <i data-lucide="settings" class="w-5 h-5 opacity-40"></i>
+                </div>
+
+                <div class="flex-1 p-6 overflow-y-auto bg-slate-50 space-y-6">
+                    <div class="flex gap-3 max-w-[90%]">
+                        <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center shrink-0"><i data-lucide="bot" class="w-5 h-5 text-blue-700"></i></div>
+                        <div class="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm border border-slate-100">
+                            <p class="text-sm text-slate-700 leading-relaxed">
+                                반갑습니다! <strong>김플랜</strong>님. <br />
+                                어떤 로봇 기술이나 장비 정보가 필요하신가요?
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 ml-11">
+                        <button class="bg-white px-4 py-2 rounded-full border border-blue-200 text-xs font-bold text-blue-700 hover:bg-blue-700 hover:text-white transition-all">⚡ 신청 절차 안내</button>
+                        <button class="bg-white px-4 py-2 rounded-full border border-blue-200 text-xs font-bold text-blue-700 hover:bg-blue-700 hover:text-white transition-all">🛠️ 장비 가용 여부</button>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-white border-t border-slate-100">
+                    <div class="relative flex items-center bg-slate-100 rounded-2xl px-4 py-3">
+                        <input type="text" placeholder="메시지를 입력하세요..." class="flex-1 bg-transparent border-none outline-none text-sm text-slate-800">
+                        <button class="p-2 text-blue-900 hover:bg-blue-900 hover:text-white rounded-xl transition-all"><i data-lucide="send" class="w-5 h-5"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. 주요 공지사항 -->
+    <section class="max-w-7xl mx-auto px-4 py-24 md:py-32">
+        <div class="flex items-center justify-between mb-16">
+            <h2 class="text-3xl font-black text-slate-900 flex items-center gap-3">
+                <span class="w-1 h-8 bg-blue-700"></span> 주요 공지사항
+            </h2>
+            <button class="text-sm font-bold text-slate-400 hover:text-blue-700">전체보기 +</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between group hover:border-blue-700 transition-all cursor-pointer">
+                <div class="flex flex-col gap-2">
+                    <span class="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded w-fit uppercase">기술이전</span>
+                    <h4 class="font-bold text-slate-800 group-hover:text-blue-700 line-clamp-1">산업용 협동로봇 정밀 제어 알고리즘 기술이전 공고</h4>
+                </div>
+                <span class="text-xs text-slate-400 ml-4 font-mono">2026.05.13</span>
+            </div>
+            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between group hover:border-blue-700 transition-all cursor-pointer">
+                <div class="flex flex-col gap-2">
+                    <span class="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded w-fit uppercase">지원사업</span>
+                    <h4 class="font-bold text-slate-800 group-hover:text-blue-700 line-clamp-1">2026년도 로봇 부품 실증 지원사업 기업 모집 안내</h4>
+                </div>
+                <span class="text-xs text-slate-400 ml-4 font-mono">2026.05.10</span>
+            </div>
+            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between group hover:border-blue-700 transition-all cursor-pointer">
+                <div class="flex flex-col gap-2">
+                    <span class="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded w-fit uppercase">KOLAS</span>
+                    <h4 class="font-bold text-slate-800 group-hover:text-blue-700 line-clamp-1">자율주행 모빌리티 안전성 시험 서비스 고도화 안내</h4>
+                </div>
+                <span class="text-xs text-slate-400 ml-4 font-mono">2026.05.08</span>
+            </div>
+            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between group hover:border-blue-700 transition-all cursor-pointer">
+                <div class="flex flex-col gap-2">
+                    <span class="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded w-fit uppercase">안내</span>
+                    <h4 class="font-bold text-slate-800 group-hover:text-blue-700 line-clamp-1">플랫폼 시스템 점검에 따른 서비스 일시 중단 안내</h4>
+                </div>
+                <span class="text-xs text-slate-400 ml-4 font-mono">2026.05.05</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. 푸터 (개인정보처리방침 등) -->
+    <footer class="bg-slate-900 text-slate-400 py-20 px-4 border-t border-white/5">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
+            <div>
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="bg-white p-1.5 rounded-lg"><i data-lucide="cpu" class="text-blue-900 w-6 h-6"></i></div>
+                    <span class="text-2xl font-black text-white tracking-tighter uppercase">KIRO</span>
+                </div>
+                <p class="text-sm font-medium leading-relaxed opacity-60">
+                    (37666) 경상북도 포항시 남구 지곡로 39<br />
+                    (재)한국로봇융합연구원 기업지원 전담팀<br />
+                    Tel. 1660-0624 | Fax. 054-279-0414
+                </p>
+            </div>
+            
+            <div class="flex flex-wrap gap-8 md:gap-16">
+                <div class="flex flex-col gap-4 text-sm font-bold uppercase tracking-widest text-white/40">
+                    <a href="#" class="text-blue-400 hover:text-blue-300">개인정보처리방침</a>
+                    <a href="#" class="hover:text-white">이메일무단수집거부</a>
+                    <a href="#" class="hover:text-white">이용약관</a>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto mt-20 pt-10 border-t border-white/5 text-[11px] font-bold uppercase tracking-[0.2em] opacity-30 text-center md:text-left">
+            Copyright © 2026 KOREA INSTITUTE OF ROBOTICS & TECHNOLOGY CONVERGENCE. All Rights Reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Lucide 아이콘 초기화
+        lucide.createIcons();
+
+        // 탭 전환 로직
+        function switchTab(tabId) {
+            const tabs = ['tech', 'equipment', 'kolas'];
+            const contentTech = document.getElementById('tech-content');
+            const contentOther = document.getElementById('other-content');
+
+            tabs.forEach(id => {
+                const tabBtn = document.getElementById('tab-' + id);
+                if (id === tabId) {
+                    tabBtn.className = 'tab-active flex items-center gap-2 px-8 py-4 rounded-full font-bold text-sm transition-all shadow-sm';
+                } else {
+                    tabBtn.className = 'tab-inactive flex items-center gap-2 px-8 py-4 rounded-full font-bold text-sm transition-all shadow-sm';
+                }
+            });
+
+            if (tabId === 'tech') {
+                contentTech.classList.remove('hidden');
+                contentTech.classList.add('block');
+                contentOther.classList.remove('block');
+                contentOther.classList.add('hidden');
+            } else {
+                contentTech.classList.remove('block');
+                contentTech.classList.add('hidden');
+                contentOther.classList.remove('hidden');
+                contentOther.classList.add('block');
+            }
+        }
+    </script>
+</body>
+</html>
