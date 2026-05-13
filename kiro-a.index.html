@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한국로봇융합연구원 (KIRO)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #ffffff;
+            overflow-x: hidden;
+        }
+        .hero-gradient {
+            background: linear-gradient(to bottom, #f3f0ff, #ffffff);
+        }
+        .notice-tab.active {
+            color: #4f46e5;
+            border-bottom: 2px solid #4f46e5;
+            font-weight: 700;
+        }
+        /* Shortcut Card Styles */
+        .shortcut-card {
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .shortcut-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+        }
+        .icon-box {
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background-color: #ffffff;
+        }
+        /* Research Field Placeholder Styles */
+        .research-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            aspect-ratio: 1 / 1.2;
+            cursor: pointer;
+            border: 1px solid #f3f4f6;
+            background-color: #f9fafb;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        .research-card:hover {
+            border-color: #4f46e5;
+            transform: translateY(-4px);
+        }
+        .img-placeholder {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #e5e7eb;
+            color: #9ca3af;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+        .research-info {
+            padding: 1.5rem;
+            background-color: #ffffff;
+        }
+        /* Banner Card Styles */
+        .banner-card {
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .partner-box {
+            border: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background-color: #ffffff;
+            transition: border-color 0.2s;
+            height: 60px;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- [Header] (Order: 로고, 연구원소개, 연구개발, 기업지원, 인재양성, KIRO 소식, 로봇 동향) -->
+    <header class="bg-white border-b sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+            <div class="flex-shrink-0">
+                <div class="w-40 h-10 bg-gray-100 border flex items-center justify-center text-sm font-bold text-gray-500 rounded cursor-pointer">
+                    로고
+                </div>
+            </div>
+            <nav class="hidden lg:flex space-x-9 text-[16px] font-medium">
+                <a href="#" class="hover:text-indigo-600 transition-colors">연구원소개</a>
+                <a href="#" class="hover:text-indigo-600 transition-colors">연구개발</a>
+                <a href="#" class="hover:text-indigo-600 transition-colors">기업지원</a>
+                <a href="#" class="hover:text-indigo-600 transition-colors">인재양성</a>
+                <a href="#" class="hover:text-indigo-600 transition-colors">KIRO 소식</a>
+                <a href="#" class="hover:text-indigo-600 transition-colors">로봇 동향</a>
+            </nav>
+            <div class="flex items-center gap-4 flex-shrink-0">
+                <div class="hidden sm:flex items-center border-l pl-4 space-x-3">
+                    <button class="text-gray-600 hover:text-indigo-600 flex items-center gap-2 text-sm font-bold">
+                        <i class="fa-solid fa-magnifying-glass"></i> 검색
+                    </button>
+                    <button class="px-2 py-1 border border-gray-300 rounded text-[10px] font-black text-gray-500 hover:bg-gray-50 transition-colors uppercase">
+                        ENG
+                    </button>
+                </div>
+                <div class="lg:hidden">
+                    <i class="fa-solid fa-bars text-2xl cursor-pointer"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- [1. 챗봇/검색] Hero Section -->
+    <section class="hero-gradient py-16 px-4 text-center">
+        <div class="max-w-4xl mx-auto">
+            <span class="text-indigo-600 font-bold mb-4 block tracking-tight">AI 통합 안내 서비스</span>
+            <h1 class="text-3xl md:text-4xl font-bold mb-8 leading-tight">
+                로봇 기술의 미래,<br>
+                KIRO와 함께 시작하세요
+            </h1>
+            <div class="relative max-w-2xl mx-auto mb-6">
+                <input type="text" 
+                       placeholder="무엇이 궁금하신가요? 기술이전, 장비 신청, KOLAS 인증을 도와드립니다" 
+                       class="w-full py-4 px-6 pr-14 rounded-full border-2 border-indigo-100 shadow-lg focus:outline-none focus:border-indigo-400">
+                <button class="absolute right-2 top-2 bottom-2 w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center hover:bg-indigo-700 transition shadow-md">
+                    <i class="fa-solid fa-arrow-up"></i>
+                </button>
+            </div>
+            <div class="flex flex-wrap justify-center gap-2 md:gap-3">
+                <button class="px-4 py-1.5 rounded-full border border-indigo-100 text-indigo-600 text-sm bg-white hover:bg-indigo-50 transition-colors">기술이전 신청 방법</button>
+                <button class="px-4 py-1.5 rounded-full border border-indigo-100 text-indigo-600 text-sm bg-white hover:bg-indigo-50 transition-colors">장비 사용 예약</button>
+                <button class="px-4 py-1.5 rounded-full border border-indigo-100 text-indigo-600 text-sm bg-white hover:bg-indigo-50 transition-colors">KOLAS 인증 절차</button>
+                <button class="px-4 py-1.5 rounded-full border border-indigo-100 text-indigo-600 text-sm bg-white hover:bg-indigo-50 transition-colors">로봇 경진대회 일정</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- [2. 바로가기] Shortcut Cards -->
+    <section class="max-w-7xl mx-auto px-4 py-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="shortcut-card bg-[#f2f4f8] p-6 flex items-center gap-5 cursor-pointer rounded-xl">
+                <div class="icon-box w-16 h-16 text-indigo-500 text-xl"><i class="fa-solid fa-graduation-cap"></i></div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-1">교육 프로그램</h3>
+                    <p class="text-sm text-gray-600">로봇 전문 직업 교육과정 안내</p>
+                </div>
+            </div>
+            <div class="shortcut-card bg-[#f1f9f5] p-6 flex items-center gap-5 cursor-pointer rounded-xl">
+                <div class="icon-box w-16 h-16 text-emerald-500 text-xl"><i class="fa-solid fa-robot"></i></div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-1">로봇 경진대회</h3>
+                    <p class="text-sm text-gray-600">대회 소개 및 참가 신청</p>
+                </div>
+            </div>
+            <div class="shortcut-card bg-[#fdf7f0] p-6 flex items-center gap-5 cursor-pointer rounded-xl">
+                <div class="icon-box w-16 h-16 text-orange-500 text-xl"><i class="fa-solid fa-calendar-check"></i></div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-1">전시관 예약</h3>
+                    <p class="text-sm text-gray-600">로봇전시관 관람 예약 안내</p>
+                </div>
+            </div>
+            <div class="shortcut-card bg-[#f2f7ff] p-6 flex items-center gap-5 cursor-pointer rounded-xl group">
+                <div class="icon-box w-16 h-16 text-blue-500 text-xl"><i class="fa-solid fa-flask"></i></div>
+                <div class="relative w-full">
+                    <div class="flex items-center gap-1">
+                        <h3 class="text-lg font-bold text-gray-900 mb-1">실증/실험 지원</h3>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-blue-400"></i>
+                    </div>
+                    <p class="text-sm text-gray-600">실증 환경 및 실험 시설 지원 안내</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- [3. 공지/소식] KIRO News Section -->
+    <section class="max-w-7xl mx-auto px-4 py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+            <!-- Left: News Board -->
+            <div class="lg:col-span-2 flex flex-col">
+                <div class="flex items-center justify-between mb-4 px-1">
+                    <h2 class="text-2xl font-bold text-gray-900">KIRO 소식</h2>
+                    <a href="#" class="text-sm text-gray-400 hover:text-indigo-600 flex items-center transition-colors">
+                        더보기 <i class="fa-solid fa-chevron-right ml-1.5 text-[10px]"></i>
+                    </a>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col flex-1">
+                    <div class="flex items-center justify-between mb-6 border-b">
+                        <div class="flex space-x-6">
+                            <button class="notice-tab active py-4 text-sm" onclick="tabClick(this)">공지사항</button>
+                            <button class="notice-tab py-4 text-sm text-gray-400 hover:text-gray-600" onclick="tabClick(this)">사업공고</button>
+                            <button class="notice-tab py-4 text-sm text-gray-400 hover:text-gray-600" onclick="tabClick(this)">입찰공고</button>
+                            <button class="notice-tab py-4 text-sm text-gray-400 hover:text-gray-600" onclick="tabClick(this)">채용공고</button>
+                        </div>
+                        <a href="#" class="text-xs text-gray-400 hover:text-indigo-600 flex items-center">더보기 <i class="fa-solid fa-arrow-right ml-1"></i></a>
+                    </div>
+                    <div class="space-y-4 flex-1">
+                        <div class="flex items-center justify-between group cursor-pointer border-b border-gray-50 pb-4">
+                            <div class="flex items-center space-x-4">
+                                <span class="px-2 py-0.5 bg-indigo-50 text-indigo-500 text-[11px] font-bold rounded">경진대회</span>
+                                <h4 class="text-sm font-medium group-hover:text-indigo-600 transition-colors">2026 극한로봇경진대회 참가팀 최종 선정 결과 안내</h4>
+                            </div>
+                            <span class="text-xs text-gray-400">2026.05.08</span>
+                        </div>
+                        <div class="flex items-center justify-between group cursor-pointer border-b border-gray-50 pb-4">
+                            <div class="flex items-center space-x-4">
+                                <span class="px-2 py-0.5 bg-emerald-50 text-emerald-500 text-[11px] font-bold rounded">교육</span>
+                                <h4 class="text-sm font-medium group-hover:text-indigo-600 transition-colors">로봇 전문 직업 인재양성 과정 3기 교육생 모집</h4>
+                            </div>
+                            <span class="text-xs text-gray-400">2026.05.06</span>
+                        </div>
+                        <div class="flex items-center justify-between group cursor-pointer border-b border-gray-50 pb-4">
+                            <div class="flex items-center space-x-4">
+                                <span class="px-2 py-0.5 bg-gray-100 text-gray-500 text-[11px] font-bold rounded">유관기관</span>
+                                <h4 class="text-sm font-medium group-hover:text-indigo-600 transition-colors">산학연계 로봇 기술 세미나 개최 안내 (포항공대 협력)</h4>
+                            </div>
+                            <span class="text-xs text-gray-400">2026.05.02</span>
+                        </div>
+                        <div class="flex items-center justify-between group cursor-pointer border-b border-gray-50 pb-4">
+                            <div class="flex items-center space-x-4">
+                                <span class="px-2 py-0.5 bg-gray-100 text-gray-500 text-[11px] font-bold rounded">유관기관</span>
+                                <h4 class="text-sm font-medium group-hover:text-indigo-600 transition-colors">KIRO 협력 기업 대상 스마트 팩토리 실증 사업 안내</h4>
+                            </div>
+                            <span class="text-xs text-gray-400">2026.04.28</span>
+                        </div>
+                        <div class="flex items-center justify-between group cursor-pointer pb-2">
+                            <div class="flex items-center space-x-4">
+                                <span class="px-2 py-0.5 bg-gray-100 text-gray-500 text-[11px] font-bold rounded">유관기관</span>
+                                <h4 class="text-sm font-medium group-hover:text-indigo-600 transition-colors">2026년도 상반기 유관기관 합동 보안 점검 안내</h4>
+                            </div>
+                            <span class="text-xs text-gray-400">2026.04.20</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Right: Banners -->
+            <div class="flex flex-col pt-12 space-y-4">
+                <div class="banner-card bg-white border-2 border-indigo-600 group cursor-pointer hover:shadow-xl transition-all flex-1">
+                    <div class="flex justify-between items-start">
+                        <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-indigo-600 transition-colors mt-2"></i>
+                    </div>
+                    <h4 class="text-xl font-black text-gray-900 mb-2">기업지원 플랫폼</h4>
+                    <p class="text-sm text-gray-500 leading-relaxed">로봇 기업을 위한 기술 지원 및 공용 장비 신청 등 통합 서비스를 제공합니다.</p>
+                </div>
+                <div class="banner-card bg-white border border-emerald-200 group cursor-pointer hover:shadow-lg transition-all flex-1">
+                    <div class="flex justify-between items-start">
+                        <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-emerald-600 transition-colors mt-2"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-2">로봇 동향</h4>
+                    <p class="text-sm text-gray-500 leading-relaxed">로봇 산업의 국내외 최신 기술 동향 및 관련 정보를 확인하실 수 있습니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- [4. 연구분야] Main Research Fields (Placeholder Version) -->
+    <section class="max-w-7xl mx-auto px-4 py-16 border-t border-gray-100">
+        <div class="flex items-center justify-between mb-10">
+            <h2 class="text-3xl font-bold text-gray-900 tracking-tight">주요 연구분야</h2>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 text-sm text-gray-400 font-medium">
+                    <span class="text-indigo-600 font-bold">01</span> — 04
+                </div>
+                <div class="flex gap-1">
+                    <button class="w-10 h-10 border border-gray-200 flex items-center justify-center rounded-full hover:bg-gray-50"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                    <button class="w-10 h-10 border border-gray-200 flex items-center justify-center rounded-full hover:bg-gray-50"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="research-card group">
+                <div class="img-placeholder">{img}</div>
+                <div class="research-info">
+                    <span class="text-indigo-500 text-xs font-bold mb-1 block uppercase tracking-widest">Research 01</span>
+                    <h4 class="text-xl font-bold">수중로봇</h4>
+                </div>
+            </div>
+            <div class="research-card group">
+                <div class="img-placeholder">{img}</div>
+                <div class="research-info">
+                    <span class="text-indigo-500 text-xs font-bold mb-1 block uppercase tracking-widest">Research 02</span>
+                    <h4 class="text-xl font-bold">재난안전로봇</h4>
+                </div>
+            </div>
+            <div class="research-card group">
+                <div class="img-placeholder">{img}</div>
+                <div class="research-info">
+                    <span class="text-indigo-500 text-xs font-bold mb-1 block uppercase tracking-widest">Research 03</span>
+                    <h4 class="text-xl font-bold">배관/건설로봇</h4>
+                </div>
+            </div>
+            <div class="research-card group">
+                <div class="img-placeholder">{img}</div>
+                <div class="research-info">
+                    <span class="text-indigo-500 text-xs font-bold mb-1 block uppercase tracking-widest">Research 04</span>
+                    <h4 class="text-xl font-bold">농업자동화</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partner Logos -->
+    <section class="border-t border-gray-100 py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-end mb-4 gap-1">
+                <button class="w-10 h-10 border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                <button class="w-10 h-10 border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-gray-600"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-0 border-t border-l border-gray-100">
+                <div class="partner-box border-r border-b"><span class="text-sm font-bold text-gray-700">환경부</span></div>
+                <div class="partner-box border-r border-b"><span class="text-sm font-bold text-gray-700">해양수산부</span></div>
+                <div class="partner-box border-r border-b"><span class="text-sm font-bold text-gray-700">방위사업청</span></div>
+                <div class="partner-box border-r border-b"><span class="text-sm font-bold text-gray-700">농림축산식품부</span></div>
+                <div class="partner-box border-r border-b"><span class="text-sm font-bold text-gray-700 text-nowrap">과학기술정보통신부</span></div>
+                <div class="partner-box border-r border-b"><span class="text-sm font-bold text-gray-700">행정안전부</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#f8f9fa] border-t py-12 px-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-8">
+            <div>
+                <p class="text-sm text-gray-500 mb-2 font-medium">(37666) 경북 포항시 남구 지곡로 39 한국로봇융합연구원</p>
+                <p class="text-sm text-gray-400">Tel. 054-279-0800 | Fax. 054-279-0899</p>
+            </div>
+            <div class="flex flex-col items-end">
+                <div class="flex space-x-6 mb-6">
+                    <a href="#" class="text-sm font-bold text-gray-600 hover:text-indigo-600">개인정보처리방침</a>
+                    <a href="#" class="text-sm text-gray-500 hover:text-indigo-600">이메일무단수집거부</a>
+                </div>
+                <div class="flex space-x-2">
+                    <button class="px-4 py-1.5 border border-gray-300 rounded text-xs font-medium text-gray-500 bg-white hover:bg-gray-50 transition-colors">로봇직업혁신센터</button>
+                    <button class="px-4 py-1.5 border border-gray-300 rounded text-xs font-medium text-gray-500 bg-white hover:bg-gray-50 transition-colors">로봇라이프뮤지엄</button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function tabClick(el) {
+            document.querySelectorAll('.notice-tab').forEach(tab => {
+                tab.classList.remove('active');
+                tab.classList.add('text-gray-400');
+            });
+            el.classList.add('active');
+            el.classList.remove('text-gray-400');
+        }
+    </script>
+</body>
+</html>
